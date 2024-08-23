@@ -154,7 +154,7 @@ def welcome_page():
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("\n  Nolan Manteufel\n  Mesa Technologies\n  (C)2024")
-        print("\n\n  [1] Pull latest files from GitHub")
+        print("\n\n  [1] Get latest messages (pull)")
         print("  [x] Exit program")
         print("\n-----------------------------------------------------------------")
 
