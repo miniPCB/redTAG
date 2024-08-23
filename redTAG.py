@@ -137,20 +137,19 @@ def configure_git_remote():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while configuring the remote repository: {e}")
 
-def pull_from_github():
+def push_to_github(file_name):
     try:
-        # Fetch the latest changes from the remote repository
-        fetch_result = subprocess.run(['git', 'fetch'], check=True, text=True, capture_output=True)
-        print(fetch_result.stdout)
-
-        # Pull the latest changes into the local branch, allowing unrelated histories to be merged
-        pull_result = subprocess.run(['git', 'pull', '--allow-unrelated-histories'], check=True, text=True, capture_output=True)
-        print(pull_result.stdout)
-
-        print("Successfully fetched and pulled the latest files from GitHub.")
+        # Stage the file for commit
+        subprocess.run(['git', 'add', file_name], check=True)
+        # Commit the file with a message
+        commit_message = f"Update {file_name} with new issue"
+        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        # Push the changes to the remote repository
+        subprocess.run(['git', 'push'], check=True)
+        print(f"Successfully pushed {file_name} to GitHub.")
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while fetching or pulling from GitHub: {e}")
-        print(f"Error details: {e.stderr}")
+        print(f"An error occurred while pushing to GitHub: {e}")
+
 
 def welcome_page():
     while True:
