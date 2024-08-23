@@ -5,8 +5,9 @@ import getpass
 import socket
 import subprocess
 
-# Define the directory where the files should be saved
-save_directory = "/home/pi/piBASE/22AUG2024/redtags"
+# Constants
+GITREPO = "git@github.com:miniPCB/redTAG.git"
+SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 
 def parse_pcb_barcode(input_string):
     board_name_pattern = r"^(.*?)-"
@@ -73,7 +74,7 @@ def create_file_with_barcode_data(input_string):
     board_name, board_rev, board_var, board_sn = parse_pcb_barcode(input_string)
 
     # Create the full file path
-    file_name = os.path.join(save_directory, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
+    file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
 
     # Read existing issues from the file
     existing_issues = read_existing_issues(file_name)
@@ -120,8 +121,8 @@ def push_to_github(file_name):
 def configure_git_remote():
     try:
         # Set the correct remote repository URL
-        subprocess.run(['git', 'remote', 'set-url', 'origin', 'git@github.com:miniPCB/piBASE.git'], check=True)
-        print("Configured the remote repository to git@github.com:miniPCB/piBASE.git.")
+        subprocess.run(['git', 'remote', 'set-url', 'origin', GITREPO], check=True)
+        print(f"Configured the remote repository to {GITREPO}.")
         
         # Verify the remote repository configuration
         result = subprocess.run(['git', 'remote', '-v'], check=True, text=True, capture_output=True)
@@ -132,16 +133,14 @@ def configure_git_remote():
 
 def pull_from_github():
     try:
-        configure_git_remote()
-        
         # Fetch the latest changes from the remote repository
         fetch_result = subprocess.run(['git', 'fetch'], check=True, text=True, capture_output=True)
         print(fetch_result.stdout)
-        
-        # Pull the latest changes into the local branch
-        pull_result = subprocess.run(['git', 'pull'], check=True, text=True, capture_output=True)
+
+        # Pull the latest changes into the local branch, allowing unrelated histories to be merged
+        pull_result = subprocess.run(['git', 'pull', '--allow-unrelated-histories'], check=True, text=True, capture_output=True)
         print(pull_result.stdout)
-        
+
         print("Successfully fetched and pulled the latest files from GitHub.")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while fetching or pulling from GitHub: {e}")
