@@ -1,0 +1,5 @@
+Board Name: ef_ctrl
+Board Revision: 0001
+Board Variant: 1
+Board Serial Number: 00103
+Message: 2024-08-22 22:30:22 - pi@raspberrypi - At Nolan's deks.
