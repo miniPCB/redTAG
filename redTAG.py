@@ -6,7 +6,7 @@ import socket
 import subprocess
 
 # Constants
-GITREPO = "git@github.com:miniPCB/redTAG.git"
+GITREPO = "git@github.com:Mesa-NManteufel/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 
 def parse_pcb_barcode(input_string):
@@ -31,6 +31,25 @@ def read_existing_issues(file_name):
                     issues.append(line.strip())
     return issues
 
+def apply_label_label_created(file_name):
+    current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    user_name = getpass.getuser()
+    computer_name = socket.gethostname()
+    issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - Label Created"
+    
+    with open(file_name, 'a+') as file:
+        file.seek(0)
+        content = file.read()
+        if not content:  # If the file is empty (newly created), write headers
+            board_name, board_rev, board_var, board_sn = parse_pcb_barcode(file_name)
+            file.write(f"Board Name: {board_name}\n")
+            file.write(f"Board Revision: {board_rev}\n")
+            file.write(f"Board Variant: {board_var}\n")
+            file.write(f"Board Serial Number: {board_sn}\n")
+        file.write(f"{issue_message}\n")
+    
+    print(f"Label 'Label Created' applied to '{file_name}'.")
+
 def prompt_user_for_action(board_name, board_rev, board_var, board_sn, existing_issues):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
@@ -53,9 +72,9 @@ def prompt_user_for_action(board_name, board_rev, board_var, board_sn, existing_
         print("\n\n\n  OPTIONS:")
         print("  [1] Enter new message.")
         print("  [x] Return to welcome screen.")
-        
+       
         user_input = input("\nChoose an option: ").strip().lower()
-        
+       
         if user_input == '1':
             issue_message = input("Enter the new message: ").strip()
             # Add the current datetime, username, and computer name to the beginning of the message
@@ -103,6 +122,7 @@ def create_file_with_barcode_data(input_string):
 
         elif action == 'welcome':
             push_to_github(file_name)
+            pull_from_github()
             break  # Exit the loop to return to the welcome page
 
 def pull_from_github():
@@ -112,8 +132,12 @@ def pull_from_github():
         print(reset_result.stdout)
 
         # Fetch the latest changes from the remote repository
-        fetch_result = subprocess.run(['git', 'fetch'], check=True, text=True, capture_output=True)
+        fetch_result = subprocess.run(['git', 'fetch', 'origin'], check=True, text=True, capture_output=True)
         print(fetch_result.stdout)
+
+        # Merge the latest changes from the remote repository, allowing unrelated histories to be merged
+        merge_result = subprocess.run(['git', 'merge', 'origin/main','--allow-unrelated-histories'], check=True, text=True, capture_output=True)
+        print(merge_result.stdout)
 
         # Pull the latest changes into the local branch, allowing unrelated histories to be merged
         pull_result = subprocess.run(['git', 'pull', '--allow-unrelated-histories'], check=True, text=True, capture_output=True)
@@ -129,11 +153,11 @@ def configure_git_remote():
         # Set the correct remote repository URL
         subprocess.run(['git', 'remote', 'set-url', 'origin', GITREPO], check=True)
         print(f"Configured the remote repository to {GITREPO}.")
-        
+
         # Verify the remote repository configuration
         result = subprocess.run(['git', 'remote', '-v'], check=True, text=True, capture_output=True)
         print(result.stdout)
-        
+
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while configuring the remote repository: {e}")
 
@@ -150,6 +174,30 @@ def push_to_github(file_name):
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while pushing to GitHub: {e}")
 
+def display_label_screen(file_name):
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
+        print("-----------------------------------------------------------------")
+        print("\tLABELS:")
+        print("\t[1] Label created")
+        print("\t[2] Bring-up testing: PASS")
+        print("\t[3] Final assembly testing: PASS")
+        print("-----------------------------------------------------------------")
+        print("\t[x] Return to Welcome page")
+        print("-----------------------------------------------------------------")
+        user_input = input("Select an option and press ENTER: ").strip().lower()
+
+        if user_input == 'x':
+            break  # Exit and return to the welcome screen
+        elif user_input == '1':
+            apply_label_label_created(file_name)
+            input("\nPress ENTER to return to the label selection screen.")
+        elif user_input in ['2', '3']:
+            # Logic to apply other labels based on user_input
+            print(f"Label '{user_input}' selected.")
+            input("\nPress ENTER to return to the label selection screen.")
+        else:
+            print("Invalid input. Please try again.")
 
 def welcome_page():
     while True:
@@ -157,20 +205,21 @@ def welcome_page():
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
-        print("\n  Nolan Manteufel\n  Mesa Technologies\n  (C)2024")
-        print("\n\n  [1] Get latest messages (pull)")
-        print("  [x] Exit program")
-        print("\n-----------------------------------------------------------------")
-
-        user_input = input("Press ENTER to scan a barcode, or choose an option: ").strip().lower()
+        print("-----------------------------------------------------------------")
+        print("\tOPTIONS:")
+        print("\t[] Press ENTER to scan a barcode")
+        print("\t[1] Apply a label")
+        print("\t[x] Exit program")
+        print("-----------------------------------------------------------------")
+        user_input = input("Select an option and press ENTER: ").strip().lower()
 
         if user_input == 'x':
             print("Exiting program...")
             break
         elif user_input == '1':
-            pull_from_github()
-            input("\nPress ENTER to return to the welcome screen.")  # Pause before returning to the main menu
+            display_label_screen(file_name=None)  # file_name will be set after scanning
         elif user_input == '':
             return 'scan'
         else:
@@ -183,7 +232,8 @@ def read_barcode():
             print("Scan a barcode:")
             barcode = input().strip()
             if barcode:
-                create_file_with_barcode_data(barcode)
+                file_name = create_file_with_barcode_data(barcode)
+                display_label_screen(file_name)
         else:
             break
 
