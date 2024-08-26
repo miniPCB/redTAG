@@ -33,6 +33,7 @@ def read_existing_issues(file_name):
 
 def apply_label(label_message):
     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen before each label application
         print(f"Apply label: '{label_message}'. Type 'x' when finished.")
         barcode = input().strip()
         
@@ -88,7 +89,6 @@ def push_to_github(file_name):
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while pushing to GitHub: {e}")
 
-
 def display_label_screen():
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
@@ -119,7 +119,7 @@ def welcome_page():
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
-        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)006")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)007")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("-----------------------------------------------------------------")
         print("\tOPTIONS:")
