@@ -6,7 +6,7 @@ import socket
 import subprocess
 
 # Constants
-GITREPO = "git@github.com:minipcb/redTAG.git"
+GITREPO = "git@github.com:miniPCB/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 
 def parse_pcb_barcode(input_string):
@@ -83,13 +83,10 @@ def display_label_screen():
             break  # Exit and return to the welcome screen
         elif user_input == '1':
             apply_label("Label Created")
-            input("\nPress ENTER to return to the label selection screen.")
         elif user_input == '2':
             apply_label("Bring-up testing: PASS")
-            input("\nPress ENTER to return to the label selection screen.")
         elif user_input == '3':
             apply_label("Final assembly testing: PASS")
-            input("\nPress ENTER to return to the label selection screen.")
         else:
             print("Invalid input. Please try again.")
 
