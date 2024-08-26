@@ -33,7 +33,7 @@ def read_existing_issues(file_name):
 
 def apply_label(label_message):
     while True:
-        print(f"Scan a barcode to apply the '{label_message}' message, or type 'x' to finish:")
+        print(f"Apply label: '{label_message}'. Type 'x' when finished.")
         barcode = input().strip()
         
         if barcode.lower() == 'x':
@@ -66,6 +66,9 @@ def apply_label(label_message):
         
         print(f"Label '{label_message}' applied to '{file_name}'.")
 
+        # Allow for the next barcode scan
+        print("\nScan another barcode, or 'x' to exit.")
+
 def display_label_screen():
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
@@ -82,11 +85,11 @@ def display_label_screen():
         if user_input == 'x':
             break  # Exit and return to the welcome screen
         elif user_input == '1':
-            apply_label("Label Created")
+            apply_label("LABEL CREATED")
         elif user_input == '2':
-            apply_label("Bring-up testing: PASS")
+            apply_label("BRING-UP TEST: PASS")
         elif user_input == '3':
-            apply_label("Final assembly testing: PASS")
+            apply_label("FINAL ASSEMBLY TEST: PASS")
         else:
             print("Invalid input. Please try again.")
 
