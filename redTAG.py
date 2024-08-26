@@ -31,9 +31,9 @@ def read_existing_issues(file_name):
                     issues.append(line.strip())
     return issues
 
-def apply_label_label_created():
+def apply_label(label_message):
     while True:
-        print("Scan a barcode to apply the 'LABEL CREATED' message, or type 'x' to finish:")
+        print(f"Scan a barcode to apply the '{label_message}' message, or type 'x' to finish:")
         barcode = input().strip()
         
         if barcode.lower() == 'x':
@@ -44,91 +44,27 @@ def apply_label_label_created():
             print("No barcode scanned. Please scan a valid barcode or type 'x' to finish.")
             continue
         
+        # Parse the barcode
         board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
         file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
         
+        # Prepare the message to be added
         current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         user_name = getpass.getuser()
         computer_name = socket.gethostname()
-        issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - Label Created"
+        issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {label_message}"
         
+        # Open the file in append mode and write the new label
         with open(file_name, 'a+') as file:
-            file.seek(0)
-            content = file.read()
-            if not content:  # If the file is empty (newly created), write headers
+            # If the file is newly created, add headers
+            if os.path.getsize(file_name) == 0:
                 file.write(f"Board Name: {board_name}\n")
                 file.write(f"Board Revision: {board_rev}\n")
                 file.write(f"Board Variant: {board_var}\n")
                 file.write(f"Board Serial Number: {board_sn}\n")
             file.write(f"{issue_message}\n")
         
-        print(f"Label 'LABEL CREATED' applied to '{file_name}'.")
-
-def apply_label_bring_up_testing_pass():
-    while True:
-        print("Scan a barcode to apply the 'BRING-UP TESTING: PASS' message, or type 'x' to finish:")
-        barcode = input().strip()
-        
-        if barcode.lower() == 'x':
-            print("Finished applying labels. Returning to the label selection screen.")
-            break
-        
-        if not barcode:
-            print("No barcode scanned. Please scan a valid barcode or type 'x' to finish.")
-            continue
-        
-        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
-        file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
-        
-        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        user_name = getpass.getuser()
-        computer_name = socket.gethostname()
-        issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - Bring-up testing: PASS"
-        
-        with open(file_name, 'a+') as file:
-            file.seek(0)
-            content = file.read()
-            if not content:  # If the file is empty (newly created), write headers
-                file.write(f"Board Name: {board_name}\n")
-                file.write(f"Board Revision: {board_rev}\n")
-                file.write(f"Board Variant: {board_var}\n")
-                file.write(f"Board Serial Number: {board_sn}\n")
-            file.write(f"{issue_message}\n")
-        
-        print(f"Label 'BRING-UP TESTING: PASS' applied to '{file_name}'.")
-
-def apply_label_final_assembly_testing_pass():
-    while True:
-        print("Scan a barcode to apply the 'FINAL ASSEMBLY TESTING: PASS' message, or type 'x' to finish:")
-        barcode = input().strip()
-        
-        if barcode.lower() == 'x':
-            print("Finished applying labels. Returning to the label selection screen.")
-            break
-        
-        if not barcode:
-            print("No barcode scanned. Please scan a valid barcode or type 'x' to finish.")
-            continue
-        
-        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
-        file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
-        
-        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        user_name = getpass.getuser()
-        computer_name = socket.gethostname()
-        issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - Final assembly testing: PASS"
-        
-        with open(file_name, 'a+') as file:
-            file.seek(0)
-            content = file.read()
-            if not content:  # If the file is empty (newly created), write headers
-                file.write(f"Board Name: {board_name}\n")
-                file.write(f"Board Revision: {board_rev}\n")
-                file.write(f"Board Variant: {board_var}\n")
-                file.write(f"Board Serial Number: {board_sn}\n")
-            file.write(f"{issue_message}\n")
-        
-        print(f"Label 'FINAL ASSEMBLY TESTING: PASS' applied to '{file_name}'.")
+        print(f"Label '{label_message}' applied to '{file_name}'.")
 
 def display_label_screen():
     while True:
@@ -146,13 +82,13 @@ def display_label_screen():
         if user_input == 'x':
             break  # Exit and return to the welcome screen
         elif user_input == '1':
-            apply_label_label_created()
+            apply_label("Label Created")
             input("\nPress ENTER to return to the label selection screen.")
         elif user_input == '2':
-            apply_label_bring_up_testing_pass()
+            apply_label("Bring-up testing: PASS")
             input("\nPress ENTER to return to the label selection screen.")
         elif user_input == '3':
-            apply_label_final_assembly_testing_pass()
+            apply_label("Final assembly testing: PASS")
             input("\nPress ENTER to return to the label selection screen.")
         else:
             print("Invalid input. Please try again.")
@@ -195,7 +131,6 @@ def read_barcode():
             break
 
 def prompt_user_for_action(board_name, board_rev, board_var, board_sn, existing_issues):
-
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
         print("redTAG!")
