@@ -194,6 +194,44 @@ def read_barcode():
         else:
             break
 
+def prompt_user_for_action(board_name, board_rev, board_var, board_sn, existing_issues):
+
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
+        print("redTAG!")
+        print("------------------------------------------------------------------------------------------------------------")
+        print(f"|    \tBoard Name: {board_name}")
+        print(f"| \tBoard Rev: {board_rev}")
+        print(f"| \tBoard Variant: {board_var}")
+        print(f"| \tBoard SN: {board_sn}")
+        print("|")
+        if existing_issues:
+            for issue in existing_issues:
+                print(f"| \t{issue}")
+        else:
+            print("| \tNo existing issues.")
+        print("|")
+        print("------------------------------------------------------------------------------------------------------------")
+        print("redTAG!")
+        print("\n\n\n  OPTIONS:")
+        print("  [1] Enter new message.")
+        print("  [x] Return to welcome screen.")
+ 
+        user_input = input("\nChoose an option: ").strip().lower()
+
+        if user_input == '1':
+            issue_message = input("Enter the new message: ").strip()
+            # Add the current datetime, username, and computer name to the beginning of the message
+            current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            user_name = getpass.getuser()
+            computer_name = socket.gethostname()
+            issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {issue_message}"
+            return 'create', issue_message
+        elif user_input == 'x':
+            return 'welcome', None
+        else:
+            print("Invalid input. Please try again.")
+
 def create_file_with_barcode_data(input_string):
     # Parse the barcode
     board_name, board_rev, board_var, board_sn = parse_pcb_barcode(input_string)
