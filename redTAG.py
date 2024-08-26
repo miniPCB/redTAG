@@ -6,7 +6,7 @@ import socket
 import subprocess
 
 # Constants
-GITREPO = "git@github.com:Mesa-NManteufel/redTAG.git"
+GITREPO = "git@github.com:minipcb/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 
 def parse_pcb_barcode(input_string):
