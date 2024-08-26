@@ -113,18 +113,37 @@ def display_label_screen():
         else:
             print("Invalid input. Please try again.")
 
+def engineer_menu():
+    os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
+    print("-----------------------------------------------------------------")
+    print("\tENGINEER MENU:")
+    print("\t[1] Placeholder Option 1")
+    print("\t[2] Placeholder Option 2")
+    print("-----------------------------------------------------------------")
+    print("\t[x] Return to Welcome page")
+    print("-----------------------------------------------------------------")
+    user_input = input("Select an option and press ENTER: ").strip().lower()
+
+    if user_input == 'x':
+        return  # Exit and return to the welcome screen
+    else:
+        print("Invalid input. Please try again.")
+        input("Press ENTER to return to the engineer menu.")
+        engineer_menu()  # Re-display the engineer menu
+
 def welcome_page():
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
-        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)007")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)008")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("-----------------------------------------------------------------")
         print("\tOPTIONS:")
         print("\t[] Press ENTER to scan a barcode")
         print("\t[1] Apply a label")
+        print("\t[ENGR] Engineer Menu")
         print("\t[x] Exit program")
         print("-----------------------------------------------------------------")
         user_input = input("Select an option and press ENTER: ").strip().lower()
@@ -134,6 +153,8 @@ def welcome_page():
             break
         elif user_input == '1':
             display_label_screen()  # Display the label selection screen
+        elif user_input == 'engr':
+            engineer_menu()  # Display the engineer menu
         elif user_input == '':
             return 'scan'
         else:
