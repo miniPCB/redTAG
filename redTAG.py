@@ -80,13 +80,14 @@ def push_to_github(file_name):
         # Stage the file for commit
         subprocess.run(['git', 'add', file_name], check=True)
         # Commit the file with a message
-        commit_message = f"Update {file_name} with new issue"
+        commit_message = f"Update {file_name} with new message"
         subprocess.run(['git', 'commit', '-m', commit_message], check=True)
         # Push the changes to the remote repository
         subprocess.run(['git', 'push'], check=True)
         print(f"File '{file_name}' successfully pushed to GitHub.")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while pushing to GitHub: {e}")
+
 
 def display_label_screen():
     while True:
@@ -118,7 +119,7 @@ def welcome_page():
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
-        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)005")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)006")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("-----------------------------------------------------------------")
         print("\tOPTIONS:")
