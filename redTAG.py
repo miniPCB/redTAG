@@ -72,9 +72,6 @@ def apply_label(label_message):
         except Exception as e:
             print(f"An error occurred while writing to the file '{file_name}': {e}")
 
-        # Log the operation for debugging
-        print(f"DEBUG: Processed barcode '{barcode}' with file '{file_name}'.")
-
         # Allow for the next barcode scan
         print("\nScan another barcode, or 'x' to exit.")
 
@@ -121,7 +118,7 @@ def welcome_page():
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
-        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)003")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)004")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("-----------------------------------------------------------------")
         print("\tOPTIONS:")
