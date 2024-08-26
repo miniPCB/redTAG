@@ -65,6 +65,9 @@ def apply_label(label_message):
                     file.write(f"Board Serial Number: {board_sn}\n")
                 file.write(f"{issue_message}\n")
             print(f"Label '{label_message}' applied to '{file_name}'.")
+            
+            # Push the changes to GitHub after each file operation
+            push_to_github(file_name)
         
         except Exception as e:
             print(f"An error occurred while writing to the file '{file_name}': {e}")
@@ -74,6 +77,19 @@ def apply_label(label_message):
 
         # Allow for the next barcode scan
         print("\nScan another barcode, or 'x' to exit.")
+
+def push_to_github(file_name):
+    try:
+        # Stage the file for commit
+        subprocess.run(['git', 'add', file_name], check=True)
+        # Commit the file with a message
+        commit_message = f"Update {file_name} with new issue"
+        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        # Push the changes to the remote repository
+        subprocess.run(['git', 'push'], check=True)
+        print(f"Successfully pushed {file_name} to GitHub.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while pushing to GitHub: {e}")
 
 def display_label_screen():
     while True:
@@ -105,7 +121,7 @@ def welcome_page():
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
-        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)002")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)003")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("-----------------------------------------------------------------")
         print("\tOPTIONS:")
@@ -205,6 +221,9 @@ def create_file_with_barcode_data(input_string):
 
                 # Re-read the file to ensure all issues are included (in case of multiple updates)
                 existing_issues = read_existing_issues(file_name)
+
+                # Push the changes to GitHub after each file operation
+                push_to_github(file_name)
             except Exception as e:
                 print(f"An error occurred while writing to the file '{file_name}': {e}")
 
@@ -212,19 +231,6 @@ def create_file_with_barcode_data(input_string):
             push_to_github(file_name)
             pull_from_github()
             break  # Exit the loop to return to the welcome page
-
-def push_to_github(file_name):
-    try:
-        # Stage the file for commit
-        subprocess.run(['git', 'add', file_name], check=True)
-        # Commit the file with a message
-        commit_message = f"Update {file_name} with new issue"
-        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
-        # Push the changes to the remote repository
-        subprocess.run(['git', 'push'], check=True)
-        print(f"Successfully pushed {file_name} to GitHub.")
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred while pushing to GitHub: {e}")
 
 def pull_from_github():
     try:
