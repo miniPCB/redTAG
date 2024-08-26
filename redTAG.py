@@ -54,17 +54,20 @@ def apply_label(label_message):
         computer_name = socket.gethostname()
         issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {label_message}"
         
-        # Open the file in append mode and write the new label
-        with open(file_name, 'a+') as file:
-            # If the file is newly created, add headers
-            if os.path.getsize(file_name) == 0:
-                file.write(f"Board Name: {board_name}\n")
-                file.write(f"Board Revision: {board_rev}\n")
-                file.write(f"Board Variant: {board_var}\n")
-                file.write(f"Board Serial Number: {board_sn}\n")
-            file.write(f"{issue_message}\n")
+        try:
+            # Open the file in append mode and write the new label
+            with open(file_name, 'a+') as file:
+                # If the file is newly created, add headers
+                if os.path.getsize(file_name) == 0:
+                    file.write(f"Board Name: {board_name}\n")
+                    file.write(f"Board Revision: {board_rev}\n")
+                    file.write(f"Board Variant: {board_var}\n")
+                    file.write(f"Board Serial Number: {board_sn}\n")
+                file.write(f"{issue_message}\n")
+            print(f"Label '{label_message}' applied to '{file_name}'.")
         
-        print(f"Label '{label_message}' applied to '{file_name}'.")
+        except Exception as e:
+            print(f"An error occurred while writing to the file '{file_name}': {e}")
 
         # Allow for the next barcode scan
         print("\nScan another barcode, or 'x' to exit.")
@@ -182,22 +185,25 @@ def create_file_with_barcode_data(input_string):
         action, issue_message = prompt_user_for_action(board_name, board_rev, board_var, board_sn, existing_issues)
 
         if action == 'create':
-            # Open the file in append mode if it exists, or create it if it doesn't
-            with open(file_name, 'a+') as file:
-                file.seek(0)
-                content = file.read()
-                if not content:  # If the file is empty (newly created), write headers
-                    file.write(f"Board Name: {board_name}\n")
-                    file.write(f"Board Revision: {board_rev}\n")
-                    file.write(f"Board Variant: {board_var}\n")
-                    file.write(f"Board Serial Number: {board_sn}\n")
-                if issue_message:
-                    file.write(f"{issue_message}\n")
-            print(f"File '{file_name}' updated with new issue.")
-            existing_issues.append(issue_message)  # Add the new issue to the list
+            try:
+                # Open the file in append mode if it exists, or create it if it doesn't
+                with open(file_name, 'a+') as file:
+                    file.seek(0)
+                    content = file.read()
+                    if not content:  # If the file is empty (newly created), write headers
+                        file.write(f"Board Name: {board_name}\n")
+                        file.write(f"Board Revision: {board_rev}\n")
+                        file.write(f"Board Variant: {board_var}\n")
+                        file.write(f"Board Serial Number: {board_sn}\n")
+                    if issue_message:
+                        file.write(f"{issue_message}\n")
+                print(f"File '{file_name}' updated with new issue.")
+                existing_issues.append(issue_message)  # Add the new issue to the list
 
-            # Re-read the file to ensure all issues are included (in case of multiple updates)
-            existing_issues = read_existing_issues(file_name)
+                # Re-read the file to ensure all issues are included (in case of multiple updates)
+                existing_issues = read_existing_issues(file_name)
+            except Exception as e:
+                print(f"An error occurred while writing to the file '{file_name}': {e}")
 
         elif action == 'welcome':
             push_to_github(file_name)
