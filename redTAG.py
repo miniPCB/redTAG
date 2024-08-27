@@ -113,23 +113,55 @@ def display_label_screen():
         else:
             print("Invalid input. Please try again.")
 
-def engineer_menu():
-    os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
+def delete_file():
+    os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen before deletion
     print("-----------------------------------------------------------------")
-    print("\tENGINEER MENU:")
-    print("\t[1] Placeholder Option 1")
-    print("\t[2] Placeholder Option 2")
+    print("DELETE FILE")
     print("-----------------------------------------------------------------")
-    print("\t[x] Return to Welcome page")
-    print("-----------------------------------------------------------------")
-    user_input = input("Select an option and press ENTER: ").strip().lower()
+    barcode = input("Scan or enter the barcode of the file to delete: ").strip()
 
-    if user_input == 'x':
-        return  # Exit and return to the welcome screen
+    if barcode:
+        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
+        file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
+        
+        if os.path.exists(file_name):
+            os.remove(file_name)
+            print(f"File '{file_name}' deleted.")
+            # Optionally, push changes to GitHub after deletion
+            try:
+                subprocess.run(['git', 'rm', file_name], check=True)
+                subprocess.run(['git', 'commit', '-m', f"Delete {file_name}"], check=True)
+                subprocess.run(['git', 'push'], check=True)
+                print(f"File '{file_name}' successfully deleted and changes pushed to GitHub.")
+            except subprocess.CalledProcessError as e:
+                print(f"An error occurred while pushing deletion to GitHub: {e}")
+        else:
+            print(f"File '{file_name}' not found.")
     else:
-        print("Invalid input. Please try again.")
-        input("Press ENTER to return to the engineer menu.")
-        engineer_menu()  # Re-display the engineer menu
+        print("No barcode provided.")
+
+    input("\nPress ENTER to return to the Engineer Menu.")
+
+def engineer_menu():
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')  # Clear the screen
+        print("-----------------------------------------------------------------")
+        print("\tENGINEER MENU:")
+        print("\t[1] DELETE FILE")
+        print("\t[2] Placeholder Option 2")
+        print("-----------------------------------------------------------------")
+        print("\t[x] Return to Welcome page")
+        print("-----------------------------------------------------------------")
+        user_input = input("Select an option and press ENTER: ").strip().lower()
+
+        if user_input == 'x':
+            return  # Exit and return to the welcome screen
+        elif user_input == '1':
+            delete_file()  # Call the delete file function
+        else:
+            print("Invalid input. Please try again.")
+            input("Press ENTER to return to the engineer menu.")
+            engineer_menu()  # Re-display the engineer menu
 
 def welcome_page():
     while True:
@@ -137,7 +169,7 @@ def welcome_page():
 
         print("-----------------------------------------------------------------")
         print("\n  Welcome to redTAG!\n  A simple system for collecting Red Tag messages.")
-        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)008")
+        print("\n  By Nolan Manteufel\n  Mesa Technologies\n  (c)2024\n  (v)009")
         print("\n  Scan a barcode,\n  See previous messages,\n  Enter new messages!")
         print("-----------------------------------------------------------------")
         print("\tOPTIONS:")
