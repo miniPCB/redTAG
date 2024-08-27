@@ -118,7 +118,7 @@ def delete_file():
     print("-----------------------------------------------------------------")
     print("DELETE FILE")
     print("-----------------------------------------------------------------")
-    barcode = input("Scan or enter the barcode of the file to delete: ").strip()
+    barcode = input("Scan a barcode: ").strip()
 
     if barcode:
         board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
@@ -148,7 +148,6 @@ def engineer_menu():
         print("-----------------------------------------------------------------")
         print("\tENGINEER MENU:")
         print("\t[1] DELETE FILE")
-        #print("\t[2] Placeholder Option 2")
         print("-----------------------------------------------------------------")
         print("\t[x] Return to Welcome page")
         print("-----------------------------------------------------------------")
@@ -175,7 +174,6 @@ def welcome_page():
         print("\tOPTIONS:")
         print("\t[] Press ENTER to scan a barcode")
         print("\t[1] Apply a label")
-        #print("\t[ENGR] Engineer Menu")
         print("\t[x] Exit program")
         print("-----------------------------------------------------------------")
         user_input = input("Select an option and press ENTER: ").strip().lower()
