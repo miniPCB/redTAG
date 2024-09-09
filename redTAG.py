@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import ttk, messagebox, simpledialog, StringVar, Radiobutton
 import re
 import os
 import datetime
@@ -11,6 +11,9 @@ import subprocess
 GITREPO = "git@github.com:miniPCB/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 VERSION = "v010"
+
+# Global list to store labels
+labels_list = []
 
 def parse_pcb_barcode(input_string):
     board_name_pattern = r"^(.*?)-"
@@ -108,15 +111,57 @@ def add_new_message():
     else:
         messagebox.showwarning("Warning", "No message entered or no barcode scanned.")
 
-def label_screen():
-    label_window = tk.Toplevel(root)
-    label_window.title("Apply a Label")
+def add_new_label():
+    new_label = new_label_entry.get().strip()
+    if new_label:
+        labels_list.append(new_label)
+        update_label_list()
+        new_label_entry.delete(0, tk.END)
+    else:
+        messagebox.showwarning("Warning", "No label entered.")
 
-    tk.Label(label_window, text="Choose a label to apply:").pack(pady=10)
-    tk.Button(label_window, text="Label Created", command=apply_label("LABEL CREATED")).pack(pady=5)
-    tk.Button(label_window, text="Bring-up Testing: PASS", command=apply_label("BRING-UP TEST: PASS")).pack(pady=5)
-    tk.Button(label_window, text="Final Assembly Testing: PASS", command=apply_label("FINAL ASSEMBLY TEST: PASS")).pack(pady=5)
-    tk.Button(label_window, text="Close", command=label_window.destroy).pack(pady=10)
+def apply_selected_label():
+    selected_label = selected_label_var.get()
+    if selected_label:
+        apply_label(selected_label)
+    else:
+        messagebox.showwarning("Warning", "No label selected.")
+
+def apply_label(label_message):
+    while True:
+        barcode = simpledialog.askstring("Apply Label", f"Apply label: '{label_message}'. Scan a barcode (or type 'x' to finish):")
+        
+        if barcode is None or barcode.lower() == 'x':
+            break
+        
+        if not barcode:
+            messagebox.showwarning("Warning", "No barcode scanned. Please scan a valid barcode.")
+            continue
+        
+        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
+        file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
+        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user_name = getpass.getuser()
+        computer_name = socket.gethostname()
+        issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {label_message}"
+        
+        try:
+            with open(file_name, 'a+') as file:
+                if os.path.getsize(file_name) == 0:
+                    file.write(f"Board Name: {board_name}\n")
+                    file.write(f"Board Revision: {board_rev}\n")
+                    file.write(f"Board Variant: {board_var}\n")
+                    file.write(f"Board Serial Number: {board_sn}\n")
+                file.write(f"{issue_message}\n")
+            push_to_github(file_name)
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
+
+def update_label_list():
+    for widget in label_list_frame.winfo_children():
+        widget.destroy()
+    for label in labels_list:
+        Radiobutton(label_list_frame, text=label, variable=selected_label_var, value=label).pack(anchor=tk.W)
 
 def delete_file():
     barcode = simpledialog.askstring("Delete File", "Scan a barcode to delete the associated file:")
@@ -140,6 +185,7 @@ def delete_file():
 def setup_tabs():
     global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
     global board_name_label, board_var_label, board_rev_label, board_sn_label
+    global new_label_entry, label_list_frame, selected_label_var
 
     tab_control = ttk.Notebook(root)
     
@@ -167,7 +213,26 @@ def setup_tabs():
     # Labels Subtab within Controls
     labels_controls_subtab = ttk.Frame(controls_subtab_control)
     controls_subtab_control.add(labels_controls_subtab, text='Labels')
-    tk.Label(labels_controls_subtab, text="Labels management controls will go here.").pack(pady=20)
+    
+    # Add New Label field and button
+    new_label_frame = ttk.Frame(labels_controls_subtab)
+    new_label_frame.pack(pady=10, padx=10, fill=tk.X)
+
+    new_label_entry = tk.Entry(new_label_frame, width=30)
+    new_label_entry.pack(side=tk.LEFT, padx=5)
+
+    add_label_button = tk.Button(new_label_frame, text="Add New Label", command=add_new_label)
+    add_label_button.pack(side=tk.LEFT, padx=5)
+
+    # List of labels with radio buttons
+    label_list_frame = ttk.Frame(labels_controls_subtab)
+    label_list_frame.pack(pady=10, padx=10, fill=tk.X)
+
+    selected_label_var = StringVar()
+    
+    # Apply Label button
+    apply_label_button = tk.Button(labels_controls_subtab, text="Apply Label", command=apply_selected_label)
+    apply_label_button.pack(pady=10)
 
     # Quick Messages Subtab within Controls
     quick_messages_subtab = ttk.Frame(controls_subtab_control)
