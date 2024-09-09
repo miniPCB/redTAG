@@ -174,7 +174,7 @@ def setup_tabs():
     root.update_idletasks()  # Update "idle" tasks, this ensures the window dimensions are recalculated
     window_width = root.winfo_width()
     window_height = root.winfo_height() + 20  # Adding a bit of extra space to accommodate form fields
-    root.geometry(f"{window_width}x{window_height}")
+    root.geometry(f"{window_width*5}x{window_height*5}")  # Set minimum size to be 5 times larger
 
     # Testing Subtab
     testing_subtab = ttk.Frame(boards_subtab_control)
