@@ -230,12 +230,12 @@ def setup_tabs():
     controls_subtab_control = ttk.Notebook(controls_tab)
     controls_subtab_control.pack(expand=1, fill="both")
 
-    # Labels Subtab within Controls
-    labels_controls_subtab = ttk.Frame(controls_subtab_control)
-    controls_subtab_control.add(labels_controls_subtab, text='Labels')
+    # Process Messages Subtab within Controls
+    process_messages_subtab = ttk.Frame(controls_subtab_control)
+    controls_subtab_control.add(process_messages_subtab, text='Process Messages')
     
     # Add New Label field and button
-    new_label_frame = ttk.Frame(labels_controls_subtab)
+    new_label_frame = ttk.Frame(process_messages_subtab)
     new_label_frame.pack(pady=10, padx=10, fill=tk.X)
 
     new_label_entry = tk.Entry(new_label_frame, width=30)
@@ -245,19 +245,19 @@ def setup_tabs():
     add_label_button.pack(side=tk.LEFT, padx=5)
 
     # List of labels with radio buttons
-    label_list_frame = ttk.Frame(labels_controls_subtab)
+    label_list_frame = ttk.Frame(process_messages_subtab)
     label_list_frame.pack(pady=10, padx=10, fill=tk.X)
 
     selected_label_var = StringVar()
     
     # Apply Label button
-    apply_label_button = tk.Button(labels_controls_subtab, text="Apply Label", command=apply_selected_label)
+    apply_label_button = tk.Button(process_messages_subtab, text="Apply Label", command=apply_selected_label)
     apply_label_button.pack(pady=10)
 
-    # Quick Messages Subtab within Controls
-    quick_messages_subtab = ttk.Frame(controls_subtab_control)
-    controls_subtab_control.add(quick_messages_subtab, text='Quick Messages')
-    tk.Label(quick_messages_subtab, text="Quick message controls will go here.").pack(pady=20)
+    # Red Tag Messages Subtab within Controls
+    red_tag_messages_subtab = ttk.Frame(controls_subtab_control)
+    controls_subtab_control.add(red_tag_messages_subtab, text='Red Tag Messages')
+    tk.Label(red_tag_messages_subtab, text="Red Tag message controls will go here.").pack(pady=20)
     
     # Trends Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
