@@ -195,10 +195,10 @@ def setup_tabs():
     boards_subtab_control = ttk.Notebook(board_info_tab)
     boards_subtab_control.pack(expand=1, fill="both")
 
-    # Labels Subtab
-    labels_subtab = ttk.Frame(boards_subtab_control)
-    boards_subtab_control.add(labels_subtab, text='Labels')
-    tk.Label(labels_subtab, text="Labels management will go here.").pack(pady=20)
+    # Process History Subtab (renamed from Labels)
+    process_history_subtab = ttk.Frame(boards_subtab_control)
+    boards_subtab_control.add(process_history_subtab, text='Process History')
+    tk.Label(process_history_subtab, text="Process history management will go here.").pack(pady=20)
 
     # Messages Subtab
     messages_subtab = ttk.Frame(boards_subtab_control)
