@@ -37,13 +37,14 @@ def read_existing_issues(file_name):
                     issues.append(line.strip())
     return issues
 
-def push_to_github(file_name):
+def push_to_github(file_name, show_message=True):
     try:
         subprocess.run(['git', 'add', file_name], check=True)
         commit_message = f"Update {file_name} with new message"
         subprocess.run(['git', 'commit', '-m', commit_message], check=True)
         subprocess.run(['git', 'push'], check=True)
-        messagebox.showinfo("Success", f"File '{file_name}' successfully pushed to GitHub.")
+        if show_message:
+            messagebox.showinfo("Success", f"File '{file_name}' successfully pushed to GitHub.")
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Error", f"An error occurred while pushing to GitHub: {e}")
 
@@ -62,7 +63,7 @@ def display_message_content(board_name, board_rev, board_var, board_sn):
     current_board_name, current_board_rev, current_board_var, current_board_sn = board_name, board_rev, board_var, board_sn
     file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
     if os.path.exists(file_name):
-        with open(file_name, 'r') as file:
+        with open(file_name, 'r') as file):
             content = file.read()
         message_text.delete(1.0, tk.END)  # Clear the existing content
         message_text.insert(tk.END, content)  # Insert the new content
@@ -153,7 +154,7 @@ def apply_label(label_message):
                     file.write(f"Board Variant: {board_var}\n")
                     file.write(f"Board Serial Number: {board_sn}\n")
                 file.write(f"{issue_message}\n")
-            push_to_github(file_name)
+            push_to_github(file_name, show_message=False)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
 
