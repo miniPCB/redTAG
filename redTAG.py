@@ -54,6 +54,25 @@ def pull_from_github():
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Error", f"An error occurred while pulling from GitHub: {e}")
 
+def display_message_content(board_name, board_rev, board_var, board_sn):
+    file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
+    if os.path.exists(file_name):
+        with open(file_name, 'r') as file:
+            content = file.read()
+        message_text.delete(1.0, tk.END)  # Clear the existing content
+        message_text.insert(tk.END, content)  # Insert the new content
+    else:
+        messagebox.showwarning("Warning", f"File '{file_name}' not found.")
+        message_text.delete(1.0, tk.END)
+
+def scan_barcode():
+    barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
+    if barcode:
+        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
+        display_message_content(board_name, board_rev, board_var, board_sn)
+    else:
+        messagebox.showwarning("Warning", "No barcode scanned.")
+
 def apply_label(label_message):
     def handle_barcode_scan():
         barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
@@ -134,32 +153,6 @@ def enter_new_message(board_name, board_rev, board_var, board_sn, existing_issue
     message_entry.pack(pady=5)
     tk.Button(message_window, text="Submit", command=submit_message).pack(pady=10)
 
-def scan_barcode():
-    barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
-    if barcode:
-        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
-        file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
-        existing_issues = read_existing_issues(file_name)
-
-        def handle_selection():
-            choice = option_var.get()
-            if choice == '1':
-                enter_new_message(board_name, board_rev, board_var, board_sn, existing_issues)
-            elif choice == 'x':
-                selection_window.destroy()
-
-        selection_window = tk.Toplevel(root)
-        selection_window.title("Options")
-        option_var = tk.StringVar()
-        option_var.set('1')  # Default to new message
-
-        tk.Label(selection_window, text="Choose an option:").pack(pady=5)
-        tk.Radiobutton(selection_window, text="Enter new message", variable=option_var, value='1').pack(anchor='w')
-        tk.Radiobutton(selection_window, text="Return to welcome screen", variable=option_var, value='x').pack(anchor='w')
-        tk.Button(selection_window, text="OK", command=handle_selection).pack(pady=10)
-    else:
-        messagebox.showwarning("Warning", "No barcode scanned.")
-
 def label_screen():
     label_window = tk.Toplevel(root)
     label_window.title("Apply a Label")
@@ -173,11 +166,12 @@ def label_screen():
 def setup_tabs():
     tab_control = ttk.Notebook(root)
     
-    # Labels Tab
-    labels_tab = ttk.Frame(tab_control)
-    tab_control.add(labels_tab, text='Labels')
-    tk.Button(labels_tab, text="Apply a Label", command=label_screen).pack(pady=20)
-    tk.Button(labels_tab, text="Delete a File", command=delete_file).pack(pady=20)
+    # Controls Tab
+    controls_tab = ttk.Frame(tab_control)
+    tab_control.add(controls_tab, text='Controls')
+    tk.Button(controls_tab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+    tk.Button(controls_tab, text="Apply a Label", command=label_screen).pack(pady=20)
+    tk.Button(controls_tab, text="Delete a File", command=delete_file).pack(pady=20)
     
     # Trends Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
@@ -194,17 +188,19 @@ def setup_tabs():
     # Labels Subtab
     labels_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(labels_subtab, text='Labels')
-    tk.Button(labels_subtab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+    tk.Label(labels_subtab, text="Labels management will go here.").pack(pady=20)
 
     # Messages Subtab
     messages_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(messages_subtab, text='Messages')
-    tk.Button(messages_subtab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+    global message_text
+    message_text = tk.Text(messages_subtab, wrap=tk.WORD)
+    message_text.pack(expand=True, fill='both')
 
     # Testing Subtab
     testing_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(testing_subtab, text='Testing')
-    tk.Button(testing_subtab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+    tk.Label(testing_subtab, text="Testing management will go here.").pack(pady=20)
     
     # About Tab
     about_tab = ttk.Frame(tab_control)
@@ -220,6 +216,6 @@ def setup_tabs():
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("redTAG")
-    root.geometry("400x300")
+    root.geometry("600x400")
     setup_tabs()
     root.mainloop()
