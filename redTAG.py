@@ -170,6 +170,12 @@ def setup_tabs():
     add_message_button = tk.Button(messages_subtab, text="Add Message", command=add_new_message)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
+    # Automatically adjust the window size to fit the content
+    root.update_idletasks()  # Update "idle" tasks, this ensures the window dimensions are recalculated
+    window_width = root.winfo_width()
+    window_height = root.winfo_height() + 20  # Adding a bit of extra space to accommodate form fields
+    root.geometry(f"{window_width}x{window_height}")
+
     # Testing Subtab
     testing_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(testing_subtab, text='Testing')
@@ -181,7 +187,6 @@ def setup_tabs():
     tk.Label(about_tab, text="By Nolan Manteufel", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="Mesa Technologies", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="(c) 2024", font=("Arial", 12)).pack(pady=5)
-    tk.Label(about_tab, text=f"Version {VERSION}", font=("Arial", 12)).pack(pady=5)
     tk.Button(about_tab, text="Update", command=pull_from_github).pack(pady=10)
 
     tab_control.pack(expand=1, fill="both")
@@ -190,6 +195,5 @@ if __name__ == "__main__":
     current_board_name = current_board_rev = current_board_var = current_board_sn = None
     root = tk.Tk()
     root.title("redTAG")
-    root.geometry("600x400")
     setup_tabs()
     root.mainloop()
