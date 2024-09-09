@@ -147,9 +147,15 @@ def setup_tabs():
     controls_tab = ttk.Frame(tab_control)
     tab_control.add(controls_tab, text='Controls')
 
-    # Add the "Scan a Barcode" and "Delete File" buttons at the top
-    tk.Button(controls_tab, text="Scan a Barcode", command=scan_barcode).pack(pady=10, padx=10, anchor=tk.W)
-    tk.Button(controls_tab, text="Delete a File", command=delete_file).pack(pady=10, padx=10, anchor=tk.W)
+    # Add the "Scan a Barcode" and "Delete File" buttons side-by-side
+    controls_button_frame = ttk.Frame(controls_tab)
+    controls_button_frame.pack(pady=10, padx=10, anchor=tk.W)
+
+    scan_button = tk.Button(controls_button_frame, text="Scan a Barcode", command=scan_barcode)
+    scan_button.pack(side=tk.LEFT, padx=5)
+
+    delete_button = tk.Button(controls_button_frame, text="Delete a File", command=delete_file)
+    delete_button.pack(side=tk.LEFT, padx=5)
 
     # Sub-tabs within Controls Tab
     controls_subtab_control = ttk.Notebook(controls_tab)
