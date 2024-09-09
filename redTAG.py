@@ -174,11 +174,8 @@ def setup_tabs():
     add_message_button = tk.Button(messages_subtab, text="Add Message", command=add_new_message)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-    # Automatically adjust the window size to fit the content
-    root.update_idletasks()  # Update "idle" tasks, this ensures the window dimensions are recalculated
-    window_width = root.winfo_width()
-    window_height = root.winfo_height() + 20  # Adding a bit of extra space to accommodate form fields
-    root.geometry(f"{window_width*5}x{window_height*5}")  # Set minimum size to be 5 times larger
+    # Set the default window size to 1280x720 pixels
+    root.geometry("1280x720")
 
     # Disable the Board Information tab until a barcode is scanned
     tab_control.tab(board_info_tab, state='disabled')
