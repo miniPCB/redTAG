@@ -72,6 +72,9 @@ def scan_barcode():
     if barcode:
         board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
         display_message_content(board_name, board_rev, board_var, board_sn)
+        # Switch to the Boards > Messages tab
+        tab_control.select(boards_tab)
+        boards_subtab_control.select(messages_subtab)
     else:
         messagebox.showwarning("Warning", "No barcode scanned.")
 
@@ -126,6 +129,7 @@ def delete_file():
         messagebox.showwarning("Warning", "No barcode provided.")
 
 def setup_tabs():
+    global tab_control, boards_tab, boards_subtab_control, messages_subtab
     tab_control = ttk.Notebook(root)
     
     # Controls Tab
