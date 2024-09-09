@@ -107,7 +107,7 @@ def add_new_message():
         try:
             with open(file_name, 'a+') as file:
                 file.write(f"{full_message}\n")
-            push_to_github(file_name)
+            push_to_github(file_name, show_message=False)  # Suppress the success message here
             display_message_content(current_board_name, current_board_rev, current_board_var, current_board_sn)
             new_message_entry.delete(0, tk.END)
             messagebox.showinfo("Success", "Message added successfully.")
