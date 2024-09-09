@@ -196,6 +196,7 @@ def setup_tabs():
     tk.Label(about_tab, text="Mesa Technologies", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="(c) 2024", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text=f"Version {VERSION}", font=("Arial", 12)).pack(pady=5)
+    tk.Button(about_tab, text="Update", command=pull_from_github).pack(pady=10)
 
     tab_control.pack(expand=1, fill="both")
 
