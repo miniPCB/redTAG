@@ -63,19 +63,13 @@ def display_message_content(board_name, board_rev, board_var, board_sn):
     current_board_name, current_board_rev, current_board_var, current_board_sn = board_name, board_rev, board_var, board_sn
     file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
     if os.path.exists(file_name):
-        with open(file_name, 'r') as file):
+        with open(file_name, 'r') as file:  # Corrected this line by removing the extra closing parenthesis
             content = file.read()
         message_text.delete(1.0, tk.END)  # Clear the existing content
         message_text.insert(tk.END, content)  # Insert the new content
     else:
         messagebox.showwarning("Warning", f"File '{file_name}' not found.")
         message_text.delete(1.0, tk.END)
-
-    # Update the board info section
-    board_name_label.config(text=f"Board Name: {board_name}")
-    board_var_label.config(text=f"Board Variant: {board_var}")
-    board_rev_label.config(text=f"Board Revision: {board_rev}")
-    board_sn_label.config(text=f"Board SN: {board_sn}")
 
 def scan_barcode():
     barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
