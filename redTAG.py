@@ -147,7 +147,7 @@ def setup_tabs():
     controls_tab = ttk.Frame(tab_control)
     tab_control.add(controls_tab, text='Controls')
 
-    # Add the "Scan a Barcode" and "Delete File" buttons side-by-side
+    # Add the "Scan a Barcode", "Delete a File", and "Update" buttons side-by-side
     controls_button_frame = ttk.Frame(controls_tab)
     controls_button_frame.pack(pady=10, padx=10, anchor=tk.W)
 
@@ -156,6 +156,9 @@ def setup_tabs():
 
     delete_button = tk.Button(controls_button_frame, text="Delete a File", command=delete_file)
     delete_button.pack(side=tk.LEFT, padx=5)
+
+    update_button = tk.Button(controls_button_frame, text="Update", command=pull_from_github)
+    update_button.pack(side=tk.LEFT, padx=5)
 
     # Sub-tabs within Controls Tab
     controls_subtab_control = ttk.Notebook(controls_tab)
@@ -237,7 +240,6 @@ def setup_tabs():
     tk.Label(about_tab, text="By Nolan Manteufel", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="Mesa Technologies", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="(c) 2024", font=("Arial", 12)).pack(pady=5)
-    tk.Button(about_tab, text="Update", command=pull_from_github).pack(pady=10)
 
     tab_control.pack(expand=1, fill="both")
 
