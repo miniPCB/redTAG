@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog, StringVar, Radiobutton
 import re
 import os
+import json
 import datetime
 import getpass
 import socket
@@ -10,6 +11,7 @@ import subprocess
 # Constants
 GITREPO = "git@github.com:miniPCB/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
+LABELS_FILE = "/home/pi/redTAG/redLabels.json"
 VERSION = "v010"
 
 # Global list to store labels
@@ -63,13 +65,19 @@ def display_message_content(board_name, board_rev, board_var, board_sn):
     current_board_name, current_board_rev, current_board_var, current_board_sn = board_name, board_rev, board_var, board_sn
     file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
     if os.path.exists(file_name):
-        with open(file_name, 'r') as file:  # Corrected this line by removing the extra closing parenthesis
+        with open(file_name, 'r') as file:
             content = file.read()
         message_text.delete(1.0, tk.END)  # Clear the existing content
         message_text.insert(tk.END, content)  # Insert the new content
     else:
         messagebox.showwarning("Warning", f"File '{file_name}' not found.")
         message_text.delete(1.0, tk.END)
+
+    # Update the board info section
+    board_name_label.config(text=f"Board Name: {board_name}")
+    board_var_label.config(text=f"Board Variant: {board_var}")
+    board_rev_label.config(text=f"Board Revision: {board_rev}")
+    board_sn_label.config(text=f"Board SN: {board_sn}")
 
 def scan_barcode():
     barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
@@ -110,10 +118,27 @@ def add_new_label():
     new_label = new_label_entry.get().strip()
     if new_label:
         labels_list.append(new_label)
+        save_labels_to_file()
         update_label_list()
         new_label_entry.delete(0, tk.END)
     else:
         messagebox.showwarning("Warning", "No label entered.")
+
+def save_labels_to_file():
+    try:
+        with open(LABELS_FILE, 'w') as file:
+            json.dump(labels_list, file)
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not save labels to file: {e}")
+
+def load_labels_from_file():
+    global labels_list
+    if os.path.exists(LABELS_FILE):
+        try:
+            with open(LABELS_FILE, 'r') as file:
+                labels_list = json.load(file)
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not load labels from file: {e}")
 
 def apply_selected_label():
     selected_label = selected_label_var.get()
@@ -307,5 +332,7 @@ if __name__ == "__main__":
     current_board_name = current_board_rev = current_board_var = current_board_sn = None
     root = tk.Tk()
     root.title("redTAG")
+    load_labels_from_file()  # Load labels from JSON file on startup
     setup_tabs()
+    update_label_list()  # Populate the label list with the loaded labels
     root.mainloop()
