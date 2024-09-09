@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import ttk, messagebox, simpledialog
 import re
 import os
 import datetime
@@ -10,6 +10,7 @@ import subprocess
 # Constants
 GITREPO = "git@github.com:miniPCB/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
+VERSION = "v010"
 
 def parse_pcb_barcode(input_string):
     board_name_pattern = r"^(.*?)-"
@@ -149,17 +150,6 @@ def scan_barcode():
     else:
         messagebox.showwarning("Warning", "No barcode scanned.")
 
-def welcome_page():
-    for widget in root.winfo_children():
-        widget.destroy()
-
-    tk.Label(root, text="Welcome to redTAG!", font=("Arial", 16)).pack(pady=10)
-    tk.Label(root, text="A simple system for collecting Red Tag messages.").pack(pady=5)
-    tk.Button(root, text="Scan a Barcode", command=scan_barcode).pack(pady=10)
-    tk.Button(root, text="Apply a Label", command=label_screen).pack(pady=10)
-    tk.Button(root, text="Delete a File", command=delete_file).pack(pady=10)
-    tk.Button(root, text="Exit", command=root.quit).pack(pady=10)
-
 def label_screen():
     label_window = tk.Toplevel(root)
     label_window.title("Apply a Label")
@@ -170,9 +160,38 @@ def label_screen():
     tk.Button(label_window, text="Final Assembly Testing: PASS", command=apply_label("FINAL ASSEMBLY TEST: PASS")).pack(pady=5)
     tk.Button(label_window, text="Close", command=label_window.destroy).pack(pady=10)
 
+def setup_tabs():
+    tab_control = ttk.Notebook(root)
+    
+    # Labels Tab
+    labels_tab = ttk.Frame(tab_control)
+    tab_control.add(labels_tab, text='Labels')
+    tk.Button(labels_tab, text="Apply a Label", command=label_screen).pack(pady=20)
+    tk.Button(labels_tab, text="Delete a File", command=delete_file).pack(pady=20)
+    
+    # Trends Tab (Placeholder)
+    trends_tab = ttk.Frame(tab_control)
+    tab_control.add(trends_tab, text='Trends')
+    tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+    
+    # Boards Tab (Placeholder)
+    boards_tab = ttk.Frame(tab_control)
+    tab_control.add(boards_tab, text='Boards')
+    tk.Label(boards_tab, text="Boards functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+    
+    # About Tab
+    about_tab = ttk.Frame(tab_control)
+    tab_control.add(about_tab, text='About')
+    tk.Label(about_tab, text="By Nolan Manteufel", font=("Arial", 12)).pack(pady=5)
+    tk.Label(about_tab, text="Mesa Technologies", font=("Arial", 12)).pack(pady=5)
+    tk.Label(about_tab, text="(c) 2024", font=("Arial", 12)).pack(pady=5)
+    tk.Label(about_tab, text=f"Version {VERSION}", font=("Arial", 12)).pack(pady=5)
+
+    tab_control.pack(expand=1, fill="both")
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("redTAG")
     root.geometry("400x300")
-    welcome_page()
+    setup_tabs()
     root.mainloop()
