@@ -72,8 +72,11 @@ def scan_barcode():
     if barcode:
         board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
         display_message_content(board_name, board_rev, board_var, board_sn)
-        # Switch to the Boards > Messages tab
-        tab_control.select(boards_tab)
+        # Enable the Board Information and Trends tabs
+        tab_control.tab(board_info_tab, state='normal')
+        tab_control.tab(trends_tab, state='normal')
+        # Switch to the Board Information > Messages tab
+        tab_control.select(board_info_tab)
         boards_subtab_control.select(messages_subtab)
     else:
         messagebox.showwarning("Warning", "No barcode scanned.")
@@ -129,7 +132,7 @@ def delete_file():
         messagebox.showwarning("Warning", "No barcode provided.")
 
 def setup_tabs():
-    global tab_control, boards_tab, boards_subtab_control, messages_subtab
+    global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
     tab_control = ttk.Notebook(root)
     
     # Controls Tab
@@ -143,12 +146,13 @@ def setup_tabs():
     trends_tab = ttk.Frame(tab_control)
     tab_control.add(trends_tab, text='Trends')
     tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+    tab_control.tab(trends_tab, state='disabled')  # Disable the Trends tab until a barcode is scanned
     
-    # Boards Tab with Subtabs
-    boards_tab = ttk.Frame(tab_control)
-    tab_control.add(boards_tab, text='Boards')
+    # Board Information Tab with Subtabs
+    board_info_tab = ttk.Frame(tab_control)
+    tab_control.add(board_info_tab, text='Board Information')
 
-    boards_subtab_control = ttk.Notebook(boards_tab)
+    boards_subtab_control = ttk.Notebook(board_info_tab)
     boards_subtab_control.pack(expand=1, fill="both")
 
     # Labels Subtab
@@ -175,6 +179,9 @@ def setup_tabs():
     window_width = root.winfo_width()
     window_height = root.winfo_height() + 20  # Adding a bit of extra space to accommodate form fields
     root.geometry(f"{window_width*5}x{window_height*5}")  # Set minimum size to be 5 times larger
+
+    # Disable the Board Information tab until a barcode is scanned
+    tab_control.tab(board_info_tab, state='disabled')
 
     # Testing Subtab
     testing_subtab = ttk.Frame(boards_subtab_control)
