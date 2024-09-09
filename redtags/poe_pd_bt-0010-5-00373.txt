@@ -4,3 +4,4 @@ Board Variant: 5
 Board Serial Number: 00373
 Message: 2024-09-09 16:39:12 - pi@raspberrypi - Where does this message go.
 Message: 2024-09-09 16:39:44 - pi@raspberrypi - FINAL ASSEMBLY TEST: PASS
+Message: 2024-09-09 16:44:52 - pi@raspberrypi - LABEL CREATED
