@@ -124,7 +124,7 @@ def add_new_label():
         update_label_list()
         new_label_entry.delete(0, tk.END)
     else:
-        messagebox.showwarning("Warning", "No label entered.")
+        messagebox.showwarning("Warning", "No Process Message entered.")
 
 def add_new_red_tag_message():
     new_message = new_red_tag_message_entry.get().strip()
@@ -173,7 +173,7 @@ def apply_selected_label():
     if selected_label:
         apply_label(selected_label)
     else:
-        messagebox.showwarning("Warning", "No label selected.")
+        messagebox.showwarning("Warning", "No Process Message selected.")
 
 def apply_selected_red_tag_message():
     selected_message = selected_red_tag_message_var.get()
@@ -184,7 +184,7 @@ def apply_selected_red_tag_message():
 
 def apply_label(label_message):
     while True:
-        barcode = simpledialog.askstring("Apply Label", f"Apply label: '{label_message}'. Scan a barcode (or type 'x' to finish):")
+        barcode = simpledialog.askstring("Apply Label", f"Apply Process Message: '{label_message}'. Scan a barcode (or type 'x' to finish):")
         
         if barcode is None or barcode.lower() == 'x':
             break
@@ -306,14 +306,14 @@ def setup_tabs():
     process_messages_subtab = ttk.Frame(controls_subtab_control)
     controls_subtab_control.add(process_messages_subtab, text='Process Messages')
     
-    # Add New Label field and button
+    # Add New Process Message field and button
     new_label_frame = ttk.Frame(process_messages_subtab)
     new_label_frame.pack(pady=10, padx=10, fill=tk.X)
 
     new_label_entry = tk.Entry(new_label_frame, width=30)
     new_label_entry.pack(side=tk.LEFT, padx=5)
 
-    add_label_button = tk.Button(new_label_frame, text="Add New Label", command=add_new_label)
+    add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=add_new_label)
     add_label_button.pack(side=tk.LEFT, padx=5)
 
     # List of labels with radio buttons
