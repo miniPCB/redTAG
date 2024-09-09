@@ -184,10 +184,10 @@ def setup_tabs():
     tab_control.add(trends_tab, text='Trends')
     tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
     
-    # Boards Tab (Placeholder)
+    # Boards Tab
     boards_tab = ttk.Frame(tab_control)
     tab_control.add(boards_tab, text='Boards')
-    tk.Label(boards_tab, text="Boards functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+    tk.Button(boards_tab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
     
     # About Tab
     about_tab = ttk.Frame(tab_control)
