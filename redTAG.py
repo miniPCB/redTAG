@@ -55,6 +55,8 @@ def pull_from_github():
         messagebox.showerror("Error", f"An error occurred while pulling from GitHub: {e}")
 
 def display_message_content(board_name, board_rev, board_var, board_sn):
+    global current_board_name, current_board_rev, current_board_var, current_board_sn
+    current_board_name, current_board_rev, current_board_var, current_board_sn = board_name, board_rev, board_var, board_sn
     file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
     if os.path.exists(file_name):
         with open(file_name, 'r') as file:
@@ -73,33 +75,36 @@ def scan_barcode():
     else:
         messagebox.showwarning("Warning", "No barcode scanned.")
 
-def apply_label(label_message):
-    def handle_barcode_scan():
-        barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
-        if barcode:
-            board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
-            file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
-            current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            user_name = getpass.getuser()
-            computer_name = socket.gethostname()
-            issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {label_message}"
+def add_new_message():
+    new_message = new_message_entry.get().strip()
+    if new_message and current_board_name:
+        file_name = os.path.join(SAVE_DIRECTORY, f"{current_board_name}-{current_board_rev}-{current_board_var}-{current_board_sn}.txt")
+        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user_name = getpass.getuser()
+        computer_name = socket.gethostname()
+        full_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {new_message}"
 
-            try:
-                with open(file_name, 'a+') as file:
-                    if os.path.getsize(file_name) == 0:
-                        file.write(f"Board Name: {board_name}\n")
-                        file.write(f"Board Revision: {board_rev}\n")
-                        file.write(f"Board Variant: {board_var}\n")
-                        file.write(f"Board Serial Number: {board_sn}\n")
-                    file.write(f"{issue_message}\n")
-                messagebox.showinfo("Success", f"Label '{label_message}' applied to '{file_name}'.")
-                push_to_github(file_name)
-            except Exception as e:
-                messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
-        else:
-            messagebox.showwarning("Warning", "No barcode scanned.")
+        try:
+            with open(file_name, 'a+') as file:
+                file.write(f"{full_message}\n")
+            push_to_github(file_name)
+            display_message_content(current_board_name, current_board_rev, current_board_var, current_board_sn)
+            new_message_entry.delete(0, tk.END)
+            messagebox.showinfo("Success", "Message added successfully.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
+    else:
+        messagebox.showwarning("Warning", "No message entered or no barcode scanned.")
 
-    return handle_barcode_scan
+def label_screen():
+    label_window = tk.Toplevel(root)
+    label_window.title("Apply a Label")
+
+    tk.Label(label_window, text="Choose a label to apply:").pack(pady=10)
+    tk.Button(label_window, text="Label Created", command=apply_label("LABEL CREATED")).pack(pady=5)
+    tk.Button(label_window, text="Bring-up Testing: PASS", command=apply_label("BRING-UP TEST: PASS")).pack(pady=5)
+    tk.Button(label_window, text="Final Assembly Testing: PASS", command=apply_label("FINAL ASSEMBLY TEST: PASS")).pack(pady=5)
+    tk.Button(label_window, text="Close", command=label_window.destroy).pack(pady=10)
 
 def delete_file():
     barcode = simpledialog.askstring("Delete File", "Scan a barcode to delete the associated file:")
@@ -119,49 +124,6 @@ def delete_file():
             messagebox.showwarning("Warning", f"File '{file_name}' not found.")
     else:
         messagebox.showwarning("Warning", "No barcode provided.")
-
-def enter_new_message(board_name, board_rev, board_var, board_sn, existing_issues):
-    file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
-
-    def submit_message():
-        issue_message = message_entry.get()
-        if issue_message:
-            current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            user_name = getpass.getuser()
-            computer_name = socket.gethostname()
-            issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {issue_message}"
-            try:
-                with open(file_name, 'a+') as file:
-                    if os.path.getsize(file_name) == 0:
-                        file.write(f"Board Name: {board_name}\n")
-                        file.write(f"Board Revision: {board_rev}\n")
-                        file.write(f"Board Variant: {board_var}\n")
-                        file.write(f"Board Serial Number: {board_sn}\n")
-                    file.write(f"{issue_message}\n")
-                messagebox.showinfo("Success", f"File '{file_name}' updated with new message.")
-                push_to_github(file_name)
-                message_window.destroy()
-            except Exception as e:
-                messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
-        else:
-            messagebox.showwarning("Warning", "Message cannot be empty.")
-
-    message_window = tk.Toplevel(root)
-    message_window.title("Enter New Message")
-    tk.Label(message_window, text="Enter your message:").pack(pady=5)
-    message_entry = tk.Entry(message_window, width=50)
-    message_entry.pack(pady=5)
-    tk.Button(message_window, text="Submit", command=submit_message).pack(pady=10)
-
-def label_screen():
-    label_window = tk.Toplevel(root)
-    label_window.title("Apply a Label")
-
-    tk.Label(label_window, text="Choose a label to apply:").pack(pady=10)
-    tk.Button(label_window, text="Label Created", command=apply_label("LABEL CREATED")).pack(pady=5)
-    tk.Button(label_window, text="Bring-up Testing: PASS", command=apply_label("BRING-UP TEST: PASS")).pack(pady=5)
-    tk.Button(label_window, text="Final Assembly Testing: PASS", command=apply_label("FINAL ASSEMBLY TEST: PASS")).pack(pady=5)
-    tk.Button(label_window, text="Close", command=label_window.destroy).pack(pady=10)
 
 def setup_tabs():
     tab_control = ttk.Notebook(root)
@@ -193,9 +155,16 @@ def setup_tabs():
     # Messages Subtab
     messages_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(messages_subtab, text='Messages')
-    global message_text
+    
+    global message_text, new_message_entry
     message_text = tk.Text(messages_subtab, wrap=tk.WORD)
     message_text.pack(expand=True, fill='both')
+
+    new_message_entry = tk.Entry(messages_subtab, width=50)
+    new_message_entry.pack(side=tk.LEFT, padx=10, pady=10)
+    
+    add_message_button = tk.Button(messages_subtab, text="Add Message", command=add_new_message)
+    add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     # Testing Subtab
     testing_subtab = ttk.Frame(boards_subtab_control)
@@ -214,6 +183,7 @@ def setup_tabs():
     tab_control.pack(expand=1, fill="both")
 
 if __name__ == "__main__":
+    current_board_name = current_board_rev = current_board_var = current_board_sn = None
     root = tk.Tk()
     root.title("redTAG")
     root.geometry("600x400")
