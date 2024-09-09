@@ -396,7 +396,7 @@ def setup_tabs():
     new_message_entry = tk.Entry(messages_subtab, width=50)
     new_message_entry.pack(side=tk.LEFT, padx=10, pady=10)
     
-    add_message_button = tk.Button(messages_subtab, text="Add Message", command=add_new_message)
+    add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=add_new_message)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     # Set the default window size to 1280x720 pixels
