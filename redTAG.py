@@ -12,10 +12,12 @@ import subprocess
 GITREPO = "git@github.com:miniPCB/redTAG.git"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 LABELS_FILE = "/home/pi/redTAG/redLabels.json"
+RED_TAG_FILE = "/home/pi/redTAG/redTagMessages.json"
 VERSION = "v010"
 
-# Global list to store labels
+# Global lists to store labels and red tag messages
 labels_list = []
+red_tag_messages_list = []
 
 def parse_pcb_barcode(input_string):
     board_name_pattern = r"^(.*?)-"
@@ -124,12 +126,29 @@ def add_new_label():
     else:
         messagebox.showwarning("Warning", "No label entered.")
 
+def add_new_red_tag_message():
+    new_message = new_red_tag_message_entry.get().strip()
+    if new_message:
+        red_tag_messages_list.append(new_message)
+        save_red_tag_messages_to_file()
+        update_red_tag_messages_list()
+        new_red_tag_message_entry.delete(0, tk.END)
+    else:
+        messagebox.showwarning("Warning", "No Red Tag message entered.")
+
 def save_labels_to_file():
     try:
         with open(LABELS_FILE, 'w') as file:
             json.dump(labels_list, file)
     except Exception as e:
         messagebox.showerror("Error", f"Could not save labels to file: {e}")
+
+def save_red_tag_messages_to_file():
+    try:
+        with open(RED_TAG_FILE, 'w') as file:
+            json.dump(red_tag_messages_list, file)
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not save Red Tag messages to file: {e}")
 
 def load_labels_from_file():
     global labels_list
@@ -140,12 +159,28 @@ def load_labels_from_file():
         except Exception as e:
             messagebox.showerror("Error", f"Could not load labels from file: {e}")
 
+def load_red_tag_messages_from_file():
+    global red_tag_messages_list
+    if os.path.exists(RED_TAG_FILE):
+        try:
+            with open(RED_TAG_FILE, 'r') as file:
+                red_tag_messages_list = json.load(file)
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not load Red Tag messages from file: {e}")
+
 def apply_selected_label():
     selected_label = selected_label_var.get()
     if selected_label:
         apply_label(selected_label)
     else:
         messagebox.showwarning("Warning", "No label selected.")
+
+def apply_selected_red_tag_message():
+    selected_message = selected_red_tag_message_var.get()
+    if selected_message:
+        apply_red_tag_message(selected_message)
+    else:
+        messagebox.showwarning("Warning", "No Red Tag message selected.")
 
 def apply_label(label_message):
     while True:
@@ -177,11 +212,47 @@ def apply_label(label_message):
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
 
+def apply_red_tag_message(red_tag_message):
+    while True:
+        barcode = simpledialog.askstring("Apply Red Tag Message", f"Apply Red Tag message: '{red_tag_message}'. Scan a barcode (or type 'x' to finish):")
+        
+        if barcode is None or barcode.lower() == 'x':
+            break
+        
+        if not barcode:
+            messagebox.showwarning("Warning", "No barcode scanned. Please scan a valid barcode.")
+            continue
+        
+        board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
+        file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
+        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user_name = getpass.getuser()
+        computer_name = socket.gethostname()
+        issue_message = f"Message: {current_datetime} - {user_name}@{computer_name} - {red_tag_message}"
+        
+        try:
+            with open(file_name, 'a+') as file:
+                if os.path.getsize(file_name) == 0:
+                    file.write(f"Board Name: {board_name}\n")
+                    file.write(f"Board Revision: {board_rev}\n")
+                    file.write(f"Board Variant: {board_var}\n")
+                    file.write(f"Board Serial Number: {board_sn}\n")
+                file.write(f"{issue_message}\n")
+            push_to_github(file_name, show_message=False)
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
+
 def update_label_list():
     for widget in label_list_frame.winfo_children():
         widget.destroy()
     for label in labels_list:
         Radiobutton(label_list_frame, text=label, variable=selected_label_var, value=label).pack(anchor=tk.W)
+
+def update_red_tag_messages_list():
+    for widget in red_tag_message_list_frame.winfo_children():
+        widget.destroy()
+    for message in red_tag_messages_list:
+        Radiobutton(red_tag_message_list_frame, text=message, variable=selected_red_tag_message_var, value=message).pack(anchor=tk.W)
 
 def delete_file():
     barcode = simpledialog.askstring("Delete File", "Scan a barcode to delete the associated file:")
@@ -206,6 +277,7 @@ def setup_tabs():
     global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
     global board_name_label, board_var_label, board_rev_label, board_sn_label
     global new_label_entry, label_list_frame, selected_label_var
+    global new_red_tag_message_entry, red_tag_message_list_frame, selected_red_tag_message_var
 
     tab_control = ttk.Notebook(root)
     
@@ -257,8 +329,27 @@ def setup_tabs():
     # Red Tag Messages Subtab within Controls
     red_tag_messages_subtab = ttk.Frame(controls_subtab_control)
     controls_subtab_control.add(red_tag_messages_subtab, text='Red Tag Messages')
-    tk.Label(red_tag_messages_subtab, text="Red Tag message controls will go here.").pack(pady=20)
     
+    # Add New Red Tag Message field and button
+    new_red_tag_message_frame = ttk.Frame(red_tag_messages_subtab)
+    new_red_tag_message_frame.pack(pady=10, padx=10, fill=tk.X)
+
+    new_red_tag_message_entry = tk.Entry(new_red_tag_message_frame, width=30)
+    new_red_tag_message_entry.pack(side=tk.LEFT, padx=5)
+
+    add_red_tag_message_button = tk.Button(new_red_tag_message_frame, text="Add New Red Tag Message", command=add_new_red_tag_message)
+    add_red_tag_message_button.pack(side=tk.LEFT, padx=5)
+
+    # List of Red Tag messages with radio buttons
+    red_tag_message_list_frame = ttk.Frame(red_tag_messages_subtab)
+    red_tag_message_list_frame.pack(pady=10, padx=10, fill=tk.X)
+
+    selected_red_tag_message_var = StringVar()
+    
+    # Apply Red Tag Message button
+    apply_red_tag_message_button = tk.Button(red_tag_messages_subtab, text="Apply Message", command=apply_selected_red_tag_message)
+    apply_red_tag_message_button.pack(pady=10)
+
     # Trends Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
     tab_control.add(trends_tab, text='Trends')
@@ -333,6 +424,8 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("redTAG")
     load_labels_from_file()  # Load labels from JSON file on startup
+    load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
     setup_tabs()
     update_label_list()  # Populate the label list with the loaded labels
+    update_red_tag_messages_list()  # Populate the Red Tag message list with the loaded messages
     root.mainloop()
