@@ -146,9 +146,24 @@ def setup_tabs():
     # Controls Tab
     controls_tab = ttk.Frame(tab_control)
     tab_control.add(controls_tab, text='Controls')
-    tk.Button(controls_tab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
-    tk.Button(controls_tab, text="Apply a Label", command=label_screen).pack(pady=20)
-    tk.Button(controls_tab, text="Delete a File", command=delete_file).pack(pady=20)
+
+    # Add the "Scan a Barcode" and "Delete File" buttons at the top
+    tk.Button(controls_tab, text="Scan a Barcode", command=scan_barcode).pack(pady=10, padx=10, anchor=tk.W)
+    tk.Button(controls_tab, text="Delete a File", command=delete_file).pack(pady=10, padx=10, anchor=tk.W)
+
+    # Sub-tabs within Controls Tab
+    controls_subtab_control = ttk.Notebook(controls_tab)
+    controls_subtab_control.pack(expand=1, fill="both")
+
+    # Labels Subtab within Controls
+    labels_controls_subtab = ttk.Frame(controls_subtab_control)
+    controls_subtab_control.add(labels_controls_subtab, text='Labels')
+    tk.Label(labels_controls_subtab, text="Labels management controls will go here.").pack(pady=20)
+
+    # Quick Messages Subtab within Controls
+    quick_messages_subtab = ttk.Frame(controls_subtab_control)
+    controls_subtab_control.add(quick_messages_subtab, text='Quick Messages')
+    tk.Label(quick_messages_subtab, text="Quick message controls will go here.").pack(pady=20)
     
     # Trends Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
