@@ -184,10 +184,27 @@ def setup_tabs():
     tab_control.add(trends_tab, text='Trends')
     tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
     
-    # Boards Tab
+    # Boards Tab with Subtabs
     boards_tab = ttk.Frame(tab_control)
     tab_control.add(boards_tab, text='Boards')
-    tk.Button(boards_tab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+
+    boards_subtab_control = ttk.Notebook(boards_tab)
+    boards_subtab_control.pack(expand=1, fill="both")
+
+    # Labels Subtab
+    labels_subtab = ttk.Frame(boards_subtab_control)
+    boards_subtab_control.add(labels_subtab, text='Labels')
+    tk.Button(labels_subtab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+
+    # Messages Subtab
+    messages_subtab = ttk.Frame(boards_subtab_control)
+    boards_subtab_control.add(messages_subtab, text='Messages')
+    tk.Button(messages_subtab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
+
+    # Testing Subtab
+    testing_subtab = ttk.Frame(boards_subtab_control)
+    boards_subtab_control.add(testing_subtab, text='Testing')
+    tk.Button(testing_subtab, text="Scan a Barcode", command=scan_barcode).pack(pady=20)
     
     # About Tab
     about_tab = ttk.Frame(tab_control)
