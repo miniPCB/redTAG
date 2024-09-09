@@ -67,6 +67,12 @@ def display_message_content(board_name, board_rev, board_var, board_sn):
         messagebox.showwarning("Warning", f"File '{file_name}' not found.")
         message_text.delete(1.0, tk.END)
 
+    # Update the board info section
+    board_name_label.config(text=f"Board Name: {board_name}")
+    board_var_label.config(text=f"Board Variant: {board_var}")
+    board_rev_label.config(text=f"Board Revision: {board_rev}")
+    board_sn_label.config(text=f"Board SN: {board_sn}")
+
 def scan_barcode():
     barcode = simpledialog.askstring("Scan Barcode", "Please scan a barcode:")
     if barcode:
@@ -133,6 +139,8 @@ def delete_file():
 
 def setup_tabs():
     global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
+    global board_name_label, board_var_label, board_rev_label, board_sn_label
+
     tab_control = ttk.Notebook(root)
     
     # Controls Tab
@@ -152,6 +160,23 @@ def setup_tabs():
     board_info_tab = ttk.Frame(tab_control)
     tab_control.add(board_info_tab, text='Board Information')
 
+    # Board Info Section at the Top
+    board_info_frame = ttk.Frame(board_info_tab)
+    board_info_frame.pack(fill=tk.X, padx=10, pady=10)
+
+    board_name_label = ttk.Label(board_info_frame, text="Board Name: N/A", font=("Arial", 12))
+    board_name_label.grid(row=0, column=0, padx=10, pady=5, sticky=tk.W)
+
+    board_var_label = ttk.Label(board_info_frame, text="Board Variant: N/A", font=("Arial", 12))
+    board_var_label.grid(row=0, column=1, padx=10, pady=5, sticky=tk.W)
+
+    board_rev_label = ttk.Label(board_info_frame, text="Board Revision: N/A", font=("Arial", 12))
+    board_rev_label.grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
+
+    board_sn_label = ttk.Label(board_info_frame, text="Board SN: N/A", font=("Arial", 12))
+    board_sn_label.grid(row=1, column=1, padx=10, pady=5, sticky=tk.W)
+
+    # Subtabs within Board Information
     boards_subtab_control = ttk.Notebook(board_info_tab)
     boards_subtab_control.pack(expand=1, fill="both")
 
