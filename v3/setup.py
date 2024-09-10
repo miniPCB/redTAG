@@ -8,9 +8,13 @@ from red_tags import apply_selected_red_tag_message, remove_red_tag_message, upd
 from utils import pull_from_github, delete_file
 from barcode import scan_barcode
 
+# Initialize the frames globally within setup_tabs
+label_list_frame = None
+
 def setup_tabs(root):
     global tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab
     global message_text, board_name_label, board_var_label, board_rev_label, board_sn_label
+    global label_list_frame  # Add this line to access and initialize the label_list_frame
 
     tab_control = ttk.Notebook(root)
     
@@ -45,6 +49,7 @@ def setup_tabs(root):
     add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=apply_selected_label)
     add_label_button.pack(side=tk.LEFT, padx=5)
 
+    # Initialize the label_list_frame here
     label_list_frame = ttk.Frame(process_messages_subtab)
     label_list_frame.pack(pady=10, padx=10, fill=tk.X)
 
