@@ -1,9 +1,21 @@
 import os
 import subprocess
 from tkinter import messagebox, simpledialog
-from barcode import parse_pcb_barcode  # Assuming parse_pcb_barcode is in barcode.py
 
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
+
+def parse_pcb_barcode(input_string):
+    board_name_pattern = r"^(.*?)-"
+    board_rev_pattern = r"^[^-]*-(.*?)-"
+    board_var_pattern = r"(?:[^-]*-){2}([^-]*)-"
+    board_sn_pattern = r"(?:[^-]*-){3}([^-\s]*)"
+
+    board_name = re.match(board_name_pattern, input_string).group(1).lower() if re.match(board_name_pattern, input_string) else "unknown"
+    board_rev = re.match(board_rev_pattern, input_string).group(1) if re.match(board_rev_pattern, input_string) else "unknown"
+    board_var = re.search(board_var_pattern, input_string).group(1) if re.search(board_var_pattern, input_string) else "unknown"
+    board_sn = re.search(board_sn_pattern, input_string).group(1) if re.search(board_sn_pattern, input_string) else "unknown"
+
+    return board_name, board_rev, board_var, board_sn
 
 def delete_file():
     barcode = simpledialog.askstring("Delete File", "Scan a barcode to delete the associated file:")
