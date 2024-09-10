@@ -1,14 +1,20 @@
+# setup.py
+
 import tkinter as tk
 from tkinter import ttk
-from common import board_info_tab, trends_tab, boards_subtab_control, messages_subtab, display_message_content
-from labels import update_label_list, apply_selected_label, remove_label
-from red_tags import update_red_tag_messages_list, apply_selected_red_tag_message, remove_red_tag_message
+from common import (
+    tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab,
+    display_message_content, selected_label_var, label_list_frame,
+    red_tag_message_list_frame, selected_red_tag_message_var
+)
+from labels import apply_selected_label, remove_label, update_label_list
+from red_tags import apply_selected_red_tag_message, remove_red_tag_message, update_red_tag_messages_list
 from utils import delete_file, pull_from_github
 from barcode import scan_barcode
 
 def setup_tabs(root):
-    global tab_control
-    
+    global tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab
+
     tab_control = ttk.Notebook(root)
     
     # Controls Tab
@@ -43,7 +49,7 @@ def setup_tabs(root):
     new_label_entry = tk.Entry(new_label_frame, width=30)
     new_label_entry.pack(side=tk.LEFT, padx=5)
 
-    add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=lambda: add_new_label(new_label_entry))
+    add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=apply_selected_label)
     add_label_button.pack(side=tk.LEFT, padx=5)
 
     # List of labels with radio buttons
@@ -71,7 +77,7 @@ def setup_tabs(root):
     new_red_tag_message_entry = tk.Entry(new_red_tag_message_frame, width=30)
     new_red_tag_message_entry.pack(side=tk.LEFT, padx=5)
 
-    add_red_tag_message_button = tk.Button(new_red_tag_message_frame, text="Add New Red Tag Message", command=lambda: add_new_red_tag_message(new_red_tag_message_entry))
+    add_red_tag_message_button = tk.Button(new_red_tag_message_frame, text="Add New Red Tag Message", command=apply_selected_red_tag_message)
     add_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
     # List of Red Tag messages with radio buttons
@@ -88,7 +94,7 @@ def setup_tabs(root):
     remove_red_tag_message_button = tk.Button(red_tag_button_frame, text="Remove", command=remove_red_tag_message)
     remove_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
-    # Trending Tab (Placeholder)
+    # Trends Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
     tab_control.add(trends_tab, text='Trending')
     tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
@@ -134,7 +140,7 @@ def setup_tabs(root):
     new_message_entry = tk.Entry(messages_subtab, width=50)
     new_message_entry.pack(side=tk.LEFT, padx=10, pady=10)
     
-    add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=add_new_message)
+    add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=apply_selected_label)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     # Set the default window size to 1280x720 pixels
@@ -157,3 +163,4 @@ def setup_tabs(root):
     tk.Label(about_tab, text="Version 2.0", font=("Arial", 12)).pack(pady=5)
 
     tab_control.pack(expand=1, fill="both")
+
