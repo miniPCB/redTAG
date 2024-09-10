@@ -41,13 +41,13 @@ def read_existing_issues(file_name):
                     issues.append(line.strip())
     return issues
 
-def push_to_github(file_name, show_message=True):
+def push_to_github(file_name, suppress_message=False):
     try:
         subprocess.run(['git', 'add', file_name], check=True)
         commit_message = f"Update {file_name} with new message"
         subprocess.run(['git', 'commit', '-m', commit_message], check=True)
         subprocess.run(['git', 'push'], check=True)
-        if show_message:
+        if not suppress_message:
             messagebox.showinfo("Success", f"File '{file_name}' successfully pushed to GitHub.")
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Error", f"An error occurred while pushing to GitHub: {e}")
@@ -107,7 +107,7 @@ def add_new_message():
         try:
             with open(file_name, 'a+') as file:
                 file.write(f"{full_message}\n")
-            push_to_github(file_name, show_message=False)  # Suppress the success message here
+            push_to_github(file_name, suppress_message=True)  # Suppress the success message here
             display_message_content(current_board_name, current_board_rev, current_board_var, current_board_sn)
             new_message_entry.delete(0, tk.END)
             messagebox.showinfo("Success", "Message added successfully.")
@@ -208,7 +208,7 @@ def apply_label(label_message):
                     file.write(f"Board Variant: {board_var}\n")
                     file.write(f"Board Serial Number: {board_sn}\n")
                 file.write(f"{issue_message}\n")
-            push_to_github(file_name, show_message=False)
+            push_to_github(file_name, suppress_message=True)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
 
@@ -238,7 +238,7 @@ def apply_red_tag_message(red_tag_message):
                     file.write(f"Board Variant: {board_var}\n")
                     file.write(f"Board Serial Number: {board_sn}\n")
                 file.write(f"{issue_message}\n")
-            push_to_github(file_name, show_message=False)
+            push_to_github(file_name, suppress_message=True)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while writing to the file '{file_name}': {e}")
 
