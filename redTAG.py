@@ -456,7 +456,9 @@ if __name__ == "__main__":
     current_board_name = current_board_rev = current_board_var = current_board_sn = None
     root = tk.Tk()
     root.title("redTAG")
-    root.iconbitmap('icon.ico')
+    #root.iconbitmap('icon.ico')
+    icon = PhotoImage(file='icon.png')
+    root.iconphoto(True, icon)  # Set the window icon to the PNG image
     load_labels_from_file()  # Load labels from JSON file on startup
     load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
     setup_tabs()
