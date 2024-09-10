@@ -1,13 +1,14 @@
+# main.py
+
 import tkinter as tk
 from setup import setup_tabs
-from common import init_tkinter_vars
+from common import initialize_variables
 
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("redTAG")
-
-    # Initialize Tkinter variables after root is created
-    init_tkinter_vars()
+    
+    initialize_variables()  # Initialize Tkinter variables after root is created
 
     setup_tabs(root)
     root.mainloop()
