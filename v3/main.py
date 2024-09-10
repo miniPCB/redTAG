@@ -6,20 +6,16 @@ from red_tags import load_red_tag_messages_from_file, update_red_tag_messages_li
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("redTAG")
-    
-    # Set application icon
-    root.iconphoto(False, tk.PhotoImage(file='icon.png'))
 
     # Load labels and red tag messages
     load_labels_from_file()
     load_red_tag_messages_from_file()
 
-    # Set up the UI
+    # Setup the tabs and UI
     setup_tabs(root)
-
-    # Update the lists with the loaded data
+    
+    # Update the label and red tag message lists
     update_label_list()
     update_red_tag_messages_list()
 
-    root.geometry("1280x720")  # Set the default window size
     root.mainloop()

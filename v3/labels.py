@@ -6,9 +6,13 @@ from tkinter import messagebox, StringVar, Radiobutton
 LABELS_FILE = "/home/pi/redTAG/redLabels.json"
 
 labels_list = []
-selected_label_var = StringVar()
+selected_label_var = None
 label_list_frame = None
 new_label_entry = None
+
+def init_labels_variables():
+    global selected_label_var
+    selected_label_var = StringVar()
 
 def load_labels_from_file():
     global labels_list
