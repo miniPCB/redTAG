@@ -136,6 +136,26 @@ def add_new_red_tag_message():
     else:
         messagebox.showwarning("Warning", "No Red Tag message entered.")
 
+def remove_label():
+    selected_label = selected_label_var.get()
+    if selected_label:
+        labels_list.remove(selected_label)
+        save_labels_to_file()
+        update_label_list()
+        messagebox.showinfo("Success", f"Process Message '{selected_label}' removed successfully.")
+    else:
+        messagebox.showwarning("Warning", "No Process Message selected.")
+
+def remove_red_tag_message():
+    selected_message = selected_red_tag_message_var.get()
+    if selected_message:
+        red_tag_messages_list.remove(selected_message)
+        save_red_tag_messages_to_file()
+        update_red_tag_messages_list()
+        messagebox.showinfo("Success", f"Red Tag message '{selected_message}' removed successfully.")
+    else:
+        messagebox.showwarning("Warning", "No Red Tag message selected.")
+
 def save_labels_to_file():
     try:
         with open(LABELS_FILE, 'w') as file:
@@ -322,9 +342,15 @@ def setup_tabs():
 
     selected_label_var = StringVar()
     
-    # Apply Label button
-    apply_label_button = tk.Button(process_messages_subtab, text="Apply Label", command=apply_selected_label)
-    apply_label_button.pack(pady=10)
+    # Apply and Remove Label buttons
+    label_button_frame = ttk.Frame(process_messages_subtab)
+    label_button_frame.pack(pady=10)
+
+    apply_label_button = tk.Button(label_button_frame, text="Apply Label", command=apply_selected_label)
+    apply_label_button.pack(side=tk.LEFT, padx=5)
+
+    remove_label_button = tk.Button(label_button_frame, text="Remove", command=remove_label)
+    remove_label_button.pack(side=tk.LEFT, padx=5)
 
     # Red Tag Messages Subtab within Controls
     red_tag_messages_subtab = ttk.Frame(controls_subtab_control)
@@ -346,9 +372,15 @@ def setup_tabs():
 
     selected_red_tag_message_var = StringVar()
     
-    # Apply Red Tag Message button
-    apply_red_tag_message_button = tk.Button(red_tag_messages_subtab, text="Apply Message", command=apply_selected_red_tag_message)
-    apply_red_tag_message_button.pack(pady=10)
+    # Apply and Remove Red Tag Message buttons
+    red_tag_button_frame = ttk.Frame(red_tag_messages_subtab)
+    red_tag_button_frame.pack(pady=10)
+
+    apply_red_tag_message_button = tk.Button(red_tag_button_frame, text="Apply Message", command=apply_selected_red_tag_message)
+    apply_red_tag_message_button.pack(side=tk.LEFT, padx=5)
+
+    remove_red_tag_message_button = tk.Button(red_tag_button_frame, text="Remove", command=remove_red_tag_message)
+    remove_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
     # Trends Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
