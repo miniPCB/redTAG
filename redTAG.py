@@ -346,7 +346,7 @@ def setup_tabs():
     label_button_frame = ttk.Frame(process_messages_subtab)
     label_button_frame.pack(pady=10)
 
-    apply_label_button = tk.Button(label_button_frame, text="Apply Label", command=apply_selected_label)
+    apply_label_button = tk.Button(label_button_frame, text="Apply Process Message", command=apply_selected_label)
     apply_label_button.pack(side=tk.LEFT, padx=5)
 
     remove_label_button = tk.Button(label_button_frame, text="Remove", command=remove_label)
