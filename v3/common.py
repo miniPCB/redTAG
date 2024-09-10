@@ -1,7 +1,5 @@
 # common.py
 
-import tkinter as tk
-
 # Constants for file paths
 LABELS_FILE = "/home/pi/redTAG/redLabels.json"
 RED_TAG_FILE = "/home/pi/redTAG/redTagMessages.json"
@@ -9,10 +7,6 @@ RED_TAG_FILE = "/home/pi/redTAG/redTagMessages.json"
 # Global lists to store labels and red tag messages
 labels_list = []
 red_tag_messages_list = []
-
-# Tkinter StringVar variables for radio button selections
-selected_label_var = tk.StringVar()
-selected_red_tag_message_var = tk.StringVar()
 
 # Tkinter Frames that will be initialized in setup.py
 label_list_frame = None
@@ -36,3 +30,9 @@ board_info_tab = None
 trends_tab = None
 boards_subtab_control = None
 messages_subtab = None
+
+# Function to initialize Tkinter StringVars after root window is created
+def init_tkinter_vars():
+    global selected_label_var, selected_red_tag_message_var
+    selected_label_var = tk.StringVar()
+    selected_red_tag_message_var = tk.StringVar()
