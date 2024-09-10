@@ -448,6 +448,7 @@ def setup_tabs():
     tk.Label(about_tab, text="By Nolan Manteufel", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="Mesa Technologies", font=("Arial", 12)).pack(pady=5)
     tk.Label(about_tab, text="(c) 2024", font=("Arial", 12)).pack(pady=5)
+    tk.Label(about_tab, text="Version 2.0", font=("Arial", 12)).pack(pady=5)
 
     tab_control.pack(expand=1, fill="both")
 
