@@ -1,6 +1,6 @@
 import os
 import subprocess
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox
 
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
 
@@ -35,6 +35,17 @@ def delete_file():
             messagebox.showwarning("Warning", f"File '{file_name}' not found.")
     else:
         messagebox.showwarning("Warning", "No barcode provided.")
+
+def push_to_github(file_name, suppress_message=False):
+    try:
+        subprocess.run(['git', 'add', file_name], check=True)
+        commit_message = f"Update {file_name} with new message"
+        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        subprocess.run(['git', 'push'], check=True)
+        if not suppress_message:
+            messagebox.showinfo("Success", f"File '{file_name}' successfully pushed to GitHub.")
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Error", f"An error occurred while pushing to GitHub: {e}")
 
 def pull_from_github():
     try:
