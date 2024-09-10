@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import ttk
 from labels import init_labels_variables, apply_selected_label, remove_label, new_label_entry, label_list_frame, selected_label_var
 from red_tags import init_red_tag_variables, apply_selected_red_tag_message, remove_red_tag_message, new_red_tag_message_entry, red_tag_message_list_frame, selected_red_tag_message_var
 
