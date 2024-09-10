@@ -1,40 +1,38 @@
 # common.py
 
 import tkinter as tk
-from tkinter import ttk
 
-# Define global variables to be shared
-tab_control = None
-board_info_tab = None
-trends_tab = None
-boards_subtab_control = None
-messages_subtab = None
+# Constants for file paths
+LABELS_FILE = "/home/pi/redTAG/redLabels.json"
+RED_TAG_FILE = "/home/pi/redTAG/redTagMessages.json"
 
-def display_message_content(board_name, board_rev, board_var, board_sn):
-    global current_board_name, current_board_rev, current_board_var, current_board_sn
-    current_board_name, current_board_rev, current_board_var, current_board_sn = board_name, board_rev, board_var, board_sn
-    file_name = f"/home/pi/redTAG/redtags/{board_name}-{board_rev}-{board_var}-{board_sn}.txt"
-    
-    if os.path.exists(file_name):
-        with open(file_name, 'r') as file:
-            content = file.read()
-        message_text.delete(1.0, tk.END)  # Clear the existing content
-        message_text.insert(tk.END, content)  # Insert the new content
-    else:
-        tk.messagebox.showwarning("Warning", f"File '{file_name}' not found.")
-        message_text.delete(1.0, tk.END)
+# Global lists to store labels and red tag messages
+labels_list = []
+red_tag_messages_list = []
 
-    # Update the board info section
-    board_name_label.config(text=f"Board Name: {board_name}")
-    board_var_label.config(text=f"Board Variant: {board_var}")
-    board_rev_label.config(text=f"Board Revision: {board_rev}")
-    board_sn_label.config(text=f"Board SN: {board_sn}")
+# Tkinter StringVar variables for radio button selections
+selected_label_var = tk.StringVar()
+selected_red_tag_message_var = tk.StringVar()
 
-# Define other shared global variables if needed
-message_text = None
+# Tkinter Frames that will be initialized in setup.py
+label_list_frame = None
+red_tag_message_list_frame = None
+
+# Current board information (set when a barcode is scanned)
+current_board_name = None
+current_board_rev = None
+current_board_var = None
+current_board_sn = None
+
+# Tkinter elements to display board information
 board_name_label = None
 board_var_label = None
 board_rev_label = None
 board_sn_label = None
 
-current_board_name = current_board_rev = current_board_var = current_board_sn = None
+# Tab control elements (needed for controlling the UI flow between different tabs)
+tab_control = None
+board_info_tab = None
+trends_tab = None
+boards_subtab_control = None
+messages_subtab = None
