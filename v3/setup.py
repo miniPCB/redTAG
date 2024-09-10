@@ -1,35 +1,14 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-from common import (
-    tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab,
-    board_name_label, board_var_label, board_rev_label, board_sn_label,
-    current_board_name, current_board_rev, current_board_var, current_board_sn
-)
-from labels import update_label_list
-from red_tags import update_red_tag_messages_list
+from tkinter import ttk
+from common import board_info_tab, trends_tab, boards_subtab_control, messages_subtab, display_message_content
+from labels import update_label_list, apply_selected_label, remove_label
+from red_tags import update_red_tag_messages_list, apply_selected_red_tag_message, remove_red_tag_message
 from utils import delete_file, pull_from_github
-
-def display_message_content(board_name, board_rev, board_var, board_sn):
-    global current_board_name, current_board_rev, current_board_var, current_board_sn
-    current_board_name, current_board_rev, current_board_var, current_board_sn = board_name, board_rev, board_var, board_sn
-    file_name = os.path.join(SAVE_DIRECTORY, f"{board_name}-{board_rev}-{board_var}-{board_sn}.txt")
-    if os.path.exists(file_name):
-        with open(file_name, 'r') as file:
-            content = file.read()
-        message_text.delete(1.0, tk.END)  # Clear the existing content
-        message_text.insert(tk.END, content)  # Insert the new content
-    else:
-        messagebox.showwarning("Warning", f"File '{file_name}' not found.")
-        message_text.delete(1.0, tk.END)
-
-    # Update the board info section
-    board_name_label.config(text=f"Board Name: {board_name}")
-    board_var_label.config(text=f"Board Variant: {board_var}")
-    board_rev_label.config(text=f"Board Revision: {board_rev}")
-    board_sn_label.config(text=f"Board SN: {board_sn}")
+from barcode import scan_barcode
 
 def setup_tabs(root):
-    global tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab
+    global tab_control
+    
     tab_control = ttk.Notebook(root)
     
     # Controls Tab
@@ -64,15 +43,13 @@ def setup_tabs(root):
     new_label_entry = tk.Entry(new_label_frame, width=30)
     new_label_entry.pack(side=tk.LEFT, padx=5)
 
-    add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=add_new_label)
+    add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=lambda: add_new_label(new_label_entry))
     add_label_button.pack(side=tk.LEFT, padx=5)
 
     # List of labels with radio buttons
     label_list_frame = ttk.Frame(process_messages_subtab)
     label_list_frame.pack(pady=10, padx=10, fill=tk.X)
 
-    selected_label_var = tk.StringVar()
-    
     # Apply and Remove Label buttons
     label_button_frame = ttk.Frame(process_messages_subtab)
     label_button_frame.pack(pady=10)
@@ -94,15 +71,13 @@ def setup_tabs(root):
     new_red_tag_message_entry = tk.Entry(new_red_tag_message_frame, width=30)
     new_red_tag_message_entry.pack(side=tk.LEFT, padx=5)
 
-    add_red_tag_message_button = tk.Button(new_red_tag_message_frame, text="Add New Red Tag Message", command=add_new_red_tag_message)
+    add_red_tag_message_button = tk.Button(new_red_tag_message_frame, text="Add New Red Tag Message", command=lambda: add_new_red_tag_message(new_red_tag_message_entry))
     add_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
     # List of Red Tag messages with radio buttons
     red_tag_message_list_frame = ttk.Frame(red_tag_messages_subtab)
     red_tag_message_list_frame.pack(pady=10, padx=10, fill=tk.X)
 
-    selected_red_tag_message_var = tk.StringVar()
-    
     # Apply and Remove Red Tag Message buttons
     red_tag_button_frame = ttk.Frame(red_tag_messages_subtab)
     red_tag_button_frame.pack(pady=10)
@@ -113,7 +88,7 @@ def setup_tabs(root):
     remove_red_tag_message_button = tk.Button(red_tag_button_frame, text="Remove", command=remove_red_tag_message)
     remove_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
-    # Trends Tab (Placeholder)
+    # Trending Tab (Placeholder)
     trends_tab = ttk.Frame(tab_control)
     tab_control.add(trends_tab, text='Trending')
     tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
