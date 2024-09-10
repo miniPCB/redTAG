@@ -6,7 +6,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("redTAG")
 
-    # Initialize Tkinter variables
+    # Initialize Tkinter variables after root is created
     init_tkinter_vars()
 
     setup_tabs(root)
