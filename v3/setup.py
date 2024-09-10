@@ -1,17 +1,16 @@
+# setup.py
+
 import tkinter as tk
 from tkinter import ttk
-from labels import init_labels_variables, apply_selected_label, remove_label, new_label_entry, label_list_frame, selected_label_var
-from red_tags import init_red_tag_variables, apply_selected_red_tag_message, remove_red_tag_message, new_red_tag_message_entry, red_tag_message_list_frame, selected_red_tag_message_var
+from common import display_message_content, tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab
+from labels import apply_selected_label, remove_label, update_label_list
+from red_tags import apply_selected_red_tag_message, remove_red_tag_message, update_red_tag_messages_list
+from utils import pull_from_github, delete_file
 from barcode import scan_barcode
-from utils import delete_file, pull_from_github
 
 def setup_tabs(root):
-    global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
-    global board_name_label, board_var_label, board_rev_label, board_sn_label
-
-    # Initialize variables for labels and red tag messages
-    init_labels_variables()
-    init_red_tag_variables()
+    global tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab
+    global message_text, board_name_label, board_var_label, board_rev_label, board_sn_label
 
     tab_control = ttk.Notebook(root)
     
@@ -19,7 +18,6 @@ def setup_tabs(root):
     controls_tab = ttk.Frame(tab_control)
     tab_control.add(controls_tab, text='Controls')
 
-    # Add the "Scan a Barcode", "Delete a File", and "Update" buttons side-by-side
     controls_button_frame = ttk.Frame(controls_tab)
     controls_button_frame.pack(pady=10, padx=10, anchor=tk.W)
 
@@ -32,15 +30,12 @@ def setup_tabs(root):
     update_button = tk.Button(controls_button_frame, text="Update", command=pull_from_github)
     update_button.pack(side=tk.LEFT, padx=5)
 
-    # Sub-tabs within Controls Tab
     controls_subtab_control = ttk.Notebook(controls_tab)
     controls_subtab_control.pack(expand=1, fill="both")
 
-    # Process Messages Subtab within Controls
     process_messages_subtab = ttk.Frame(controls_subtab_control)
     controls_subtab_control.add(process_messages_subtab, text='Process Messages')
     
-    # Add New Process Message field and button
     new_label_frame = ttk.Frame(process_messages_subtab)
     new_label_frame.pack(pady=10, padx=10, fill=tk.X)
 
@@ -50,13 +45,11 @@ def setup_tabs(root):
     add_label_button = tk.Button(new_label_frame, text="Add New Process Message", command=apply_selected_label)
     add_label_button.pack(side=tk.LEFT, padx=5)
 
-    # List of labels with radio buttons
     label_list_frame = ttk.Frame(process_messages_subtab)
     label_list_frame.pack(pady=10, padx=10, fill=tk.X)
 
     selected_label_var = tk.StringVar()
-    
-    # Apply and Remove Label buttons
+
     label_button_frame = ttk.Frame(process_messages_subtab)
     label_button_frame.pack(pady=10)
 
@@ -66,11 +59,9 @@ def setup_tabs(root):
     remove_label_button = tk.Button(label_button_frame, text="Remove", command=remove_label)
     remove_label_button.pack(side=tk.LEFT, padx=5)
 
-    # Red Tag Messages Subtab within Controls
     red_tag_messages_subtab = ttk.Frame(controls_subtab_control)
     controls_subtab_control.add(red_tag_messages_subtab, text='Red Tag Messages')
     
-    # Add New Red Tag Message field and button
     new_red_tag_message_frame = ttk.Frame(red_tag_messages_subtab)
     new_red_tag_message_frame.pack(pady=10, padx=10, fill=tk.X)
 
@@ -80,13 +71,11 @@ def setup_tabs(root):
     add_red_tag_message_button = tk.Button(new_red_tag_message_frame, text="Add New Red Tag Message", command=apply_selected_red_tag_message)
     add_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
-    # List of Red Tag messages with radio buttons
     red_tag_message_list_frame = ttk.Frame(red_tag_messages_subtab)
     red_tag_message_list_frame.pack(pady=10, padx=10, fill=tk.X)
 
     selected_red_tag_message_var = tk.StringVar()
-    
-    # Apply and Remove Red Tag Message buttons
+
     red_tag_button_frame = ttk.Frame(red_tag_messages_subtab)
     red_tag_button_frame.pack(pady=10)
 
@@ -96,17 +85,16 @@ def setup_tabs(root):
     remove_red_tag_message_button = tk.Button(red_tag_button_frame, text="Remove", command=remove_red_tag_message)
     remove_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
-    # Trending Tab
+    # Trends Tab
     trends_tab = ttk.Frame(tab_control)
     tab_control.add(trends_tab, text='Trending')
-    tk.Label(trends_tab, text="Trending functionality coming soon...", font=("Arial", 14)).pack(pady=20)
-    tab_control.tab(trends_tab, state='disabled')  # Disable the Trends tab until a barcode is scanned
-    
-    # Board Information Tab with Subtabs
+    tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+    tab_control.tab(trends_tab, state='disabled')
+
+    # Board Information Tab
     board_info_tab = ttk.Frame(tab_control)
     tab_control.add(board_info_tab, text='Board Information')
 
-    # Board Info Section at the Top
     board_info_frame = ttk.Frame(board_info_tab)
     board_info_frame.pack(fill=tk.X, padx=10, pady=10)
 
@@ -122,27 +110,22 @@ def setup_tabs(root):
     board_sn_label = ttk.Label(board_info_frame, text="Board SN: N/A", font=("Arial", 12))
     board_sn_label.grid(row=1, column=1, padx=10, pady=5, sticky=tk.W)
 
-    # Subtabs within Board Information
     boards_subtab_control = ttk.Notebook(board_info_tab)
     boards_subtab_control.pack(expand=1, fill="both")
 
-    # Process History Subtab (renamed from Labels)
     process_history_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(process_history_subtab, text='Process History')
-    tk.Label(process_history_subtab, text="Process history management will go here.").pack(pady=20)
 
-    # Messages Subtab
     messages_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(messages_subtab, text='Messages')
-    
-    global message_text, new_message_entry
+
     message_text = tk.Text(messages_subtab, wrap=tk.WORD)
     message_text.pack(expand=True, fill='both')
 
     new_message_entry = tk.Entry(messages_subtab, width=50)
     new_message_entry.pack(side=tk.LEFT, padx=10, pady=10)
-    
-    add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=apply_selected_red_tag_message)
+
+    add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=apply_selected_label)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     # Set the default window size to 1280x720 pixels
