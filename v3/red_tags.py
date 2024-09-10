@@ -6,9 +6,13 @@ from tkinter import messagebox, StringVar, Radiobutton
 RED_TAG_FILE = "/home/pi/redTAG/redTagMessages.json"
 
 red_tag_messages_list = []
-selected_red_tag_message_var = StringVar()
+selected_red_tag_message_var = None
 red_tag_message_list_frame = None
 new_red_tag_message_entry = None
+
+def init_red_tag_variables():
+    global selected_red_tag_message_var
+    selected_red_tag_message_var = StringVar()
 
 def load_red_tag_messages_from_file():
     global red_tag_messages_list

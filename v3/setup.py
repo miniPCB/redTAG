@@ -4,8 +4,6 @@ from red_tags import init_red_tag_variables, apply_selected_red_tag_message, rem
 def setup_tabs(root):
     global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
     global board_name_label, board_var_label, board_rev_label, board_sn_label
-    global new_label_entry, label_list_frame, selected_label_var
-    global new_red_tag_message_entry, red_tag_message_list_frame, selected_red_tag_message_var
 
     # Initialize variables for labels and red tag messages
     init_labels_variables()
