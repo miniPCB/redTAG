@@ -204,7 +204,7 @@ def apply_selected_red_tag_message():
 
 def apply_label(label_message):
     while True:
-        barcode = simpledialog.askstring("Apply Label", f"Apply Process Message: '{label_message}'. Scan a barcode (or type 'x' to finish):")
+        barcode = simpledialog.askstring("Apply Process Message", f"Apply Process Message: '{label_message}'. Scan a barcode (or type 'x' to finish):")
         
         if barcode is None or barcode.lower() == 'x':
             break
@@ -376,7 +376,7 @@ def setup_tabs():
     red_tag_button_frame = ttk.Frame(red_tag_messages_subtab)
     red_tag_button_frame.pack(pady=10)
 
-    apply_red_tag_message_button = tk.Button(red_tag_button_frame, text="Apply Message", command=apply_selected_red_tag_message)
+    apply_red_tag_message_button = tk.Button(red_tag_button_frame, text="Apply Red Tag Message", command=apply_selected_red_tag_message)
     apply_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
     remove_red_tag_message_button = tk.Button(red_tag_button_frame, text="Remove", command=remove_red_tag_message)
