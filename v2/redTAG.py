@@ -86,9 +86,9 @@ def scan_barcode():
     if barcode:
         board_name, board_rev, board_var, board_sn = parse_pcb_barcode(barcode)
         display_message_content(board_name, board_rev, board_var, board_sn)
-        # Enable the Board Information and Trends tabs
+        # Enable the Board Information and Trending tabs
         tab_control.tab(board_info_tab, state='normal')
-        tab_control.tab(trends_tab, state='normal')
+        tab_control.tab(trending_tab, state='normal')
         # Switch to the Board Information > Messages tab
         tab_control.select(board_info_tab)
         boards_subtab_control.select(messages_subtab)
@@ -204,7 +204,7 @@ def apply_selected_red_tag_message():
 
 def apply_label(label_message):
     while True:
-        barcode = simpledialog.askstring("Apply Process Message", f"Apply Process Message: '{label_message}'. Scan a barcode (or type 'x' to finish):")
+        barcode = simpledialog.askstring("Apply Label", f"Apply Process Message: '{label_message}'. Scan a barcode (or type 'x' to finish):")
         
         if barcode is None or barcode.lower() == 'x':
             break
@@ -294,7 +294,7 @@ def delete_file():
         messagebox.showwarning("Warning", "No barcode provided.")
 
 def setup_tabs():
-    global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trends_tab
+    global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trending_tab
     global board_name_label, board_var_label, board_rev_label, board_sn_label
     global new_label_entry, label_list_frame, selected_label_var
     global new_red_tag_message_entry, red_tag_message_list_frame, selected_red_tag_message_var
@@ -346,7 +346,7 @@ def setup_tabs():
     label_button_frame = ttk.Frame(process_messages_subtab)
     label_button_frame.pack(pady=10)
 
-    apply_label_button = tk.Button(label_button_frame, text="Apply Process Message", command=apply_selected_label)
+    apply_label_button = tk.Button(label_button_frame, text="Apply Label", command=apply_selected_label)
     apply_label_button.pack(side=tk.LEFT, padx=5)
 
     remove_label_button = tk.Button(label_button_frame, text="Remove", command=remove_label)
@@ -376,17 +376,17 @@ def setup_tabs():
     red_tag_button_frame = ttk.Frame(red_tag_messages_subtab)
     red_tag_button_frame.pack(pady=10)
 
-    apply_red_tag_message_button = tk.Button(red_tag_button_frame, text="Apply Red Tag Message", command=apply_selected_red_tag_message)
+    apply_red_tag_message_button = tk.Button(red_tag_button_frame, text="Apply Message", command=apply_selected_red_tag_message)
     apply_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
     remove_red_tag_message_button = tk.Button(red_tag_button_frame, text="Remove", command=remove_red_tag_message)
     remove_red_tag_message_button.pack(side=tk.LEFT, padx=5)
 
-    # Trends Tab (Placeholder)
-    trends_tab = ttk.Frame(tab_control)
-    tab_control.add(trends_tab, text='Trends')
-    tk.Label(trends_tab, text="Trends functionality coming soon...", font=("Arial", 14)).pack(pady=20)
-    tab_control.tab(trends_tab, state='disabled')  # Disable the Trends tab until a barcode is scanned
+    # Trending Tab (renamed from Trends)
+    trending_tab = ttk.Frame(tab_control)
+    tab_control.add(trending_tab, text='Trending')
+    tk.Label(trending_tab, text="Trending functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+    tab_control.tab(trending_tab, state='disabled')  # Disable the Trending tab until a barcode is scanned
     
     # Board Information Tab with Subtabs
     board_info_tab = ttk.Frame(tab_control)
@@ -431,16 +431,20 @@ def setup_tabs():
     add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=add_new_message)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-    # Set the default window size to 1280x720 pixels
-    root.geometry("1280x720")
-
-    # Disable the Board Information tab until a barcode is scanned
-    tab_control.tab(board_info_tab, state='disabled')
-
     # Testing Subtab
     testing_subtab = ttk.Frame(boards_subtab_control)
     boards_subtab_control.add(testing_subtab, text='Testing')
     tk.Label(testing_subtab, text="Testing management will go here.").pack(pady=20)
+    
+    # Build Information Tab
+    build_info_tab = ttk.Frame(tab_control)
+    tab_control.add(build_info_tab, text='Build Information')
+    tk.Label(build_info_tab, text="Build information functionality coming soon...", font=("Arial", 14)).pack(pady=20)
+
+    # Quality Information Tab
+    quality_info_tab = ttk.Frame(tab_control)
+    tab_control.add(quality_info_tab, text='Quality Information')
+    tk.Label(quality_info_tab, text="Quality information functionality coming soon...", font=("Arial", 14)).pack(pady=20)
     
     # About Tab
     about_tab = ttk.Frame(tab_control)
@@ -456,9 +460,9 @@ if __name__ == "__main__":
     current_board_name = current_board_rev = current_board_var = current_board_sn = None
     root = tk.Tk()
     root.title("redTAG")
-    #root.iconbitmap('icon.ico')
+    root.geometry("1280x720")
     icon = PhotoImage(file='icon.png')
-    root.iconphoto(True, icon)  # Set the window icon to the PNG image
+    root.iconphoto(False, icon)
     load_labels_from_file()  # Load labels from JSON file on startup
     load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
     setup_tabs()
