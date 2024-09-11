@@ -1,8 +1,9 @@
 import json
 import os
 from tkinter import messagebox, Radiobutton
-from common import label_list_frame, labels_list, LABELS_FILE, selected_label_var
+from common import label_list_frame, labels_list, LABELS_FILE
 from utils import *
+from setup import *
 
 def load_labels_from_file():
     global labels_list
