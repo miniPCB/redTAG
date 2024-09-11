@@ -1,9 +1,4 @@
-import tkinter as tk
 from setup import setup_tabs
-from common import root
 
-# Initialize the root window
+# Run the application setup
 setup_tabs()
-
-# Start the main event loop
-root.mainloop()
