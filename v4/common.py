@@ -19,6 +19,7 @@ red_tag_message_list_frame = None
 
 LABELS_FILE = "/home/pi/redTAG/v4/redLabels.json"
 RED_TAG_FILE = "/home/pi/redTAG/v4/redTagMessages.json"
+ICON_FILEPATHNAME = '/home/pi/redTAG/v4/icon.png'
 
 def display_message_content(board_name, board_rev, board_var, board_sn):
     # Your code for displaying message content based on the parsed barcode
