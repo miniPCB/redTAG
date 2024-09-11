@@ -8,6 +8,4 @@ if __name__ == "__main__":
     load_labels_from_file()  # Load labels from JSON file on startup
     load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
     setup_tabs(root)
-    update_label_list()  # Populate the label list with the loaded labels
-    update_red_tag_messages_list()  # Populate the Red Tag message list with the loaded messages
     root.mainloop()
