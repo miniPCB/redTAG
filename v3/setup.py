@@ -10,7 +10,7 @@ from common import (
 from labels import apply_selected_label, remove_label, update_label_list
 from red_tags import apply_selected_red_tag_message, remove_red_tag_message, update_red_tag_messages_list
 from utils import delete_file, pull_from_github
-from barcode import scan_barcode
+from v4.barcode import scan_barcode
 
 def setup_tabs(root):
     global tab_control, board_info_tab, trends_tab, boards_subtab_control, messages_subtab
