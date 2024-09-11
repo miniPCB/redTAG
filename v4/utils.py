@@ -16,6 +16,15 @@ def parse_pcb_barcode(input_string):
 
     return board_name, board_rev, board_var, board_sn
 
+def read_existing_issues(file_name):
+    issues = []
+    if os.path.exists(file_name):
+        with open(file_name, 'r') as file:
+            for line in file:
+                if line.startswith("Message:"):
+                    issues.append(line.strip())
+    return issues
+
 def push_to_github(file_name, suppress_message=False):
     try:
         subprocess.run(['git', 'add', file_name], check=True)

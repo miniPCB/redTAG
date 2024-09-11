@@ -1,6 +1,13 @@
 from setup import setup_tabs, initialize_application
+from labels import *
+from red_tags import *
 
 if __name__ == "__main__":
-    root = initialize_application()
-    setup_tabs(root)
+    current_board_name = current_board_rev = current_board_var = current_board_sn = None
+    root = tk.Tk()
+    load_labels_from_file()  # Load labels from JSON file on startup
+    load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
+    setup_tabs()
+    update_label_list()  # Populate the label list with the loaded labels
+    update_red_tag_messages_list()  # Populate the Red Tag message list with the loaded messages
     root.mainloop()
