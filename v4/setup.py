@@ -169,8 +169,16 @@ def initialize_application():
     root = tk.Tk()
     root.title("redTAG")
     root.geometry("1280x720")
-    icon = tk.PhotoImage(file=ICON_FILEPATHNAME)
-    root.iconphoto(False, icon)
+
+
+    try:
+        icon = PhotoImage(file=ICON_FILEPATHNAME)
+        root.iconphoto(False, icon)
+    except Exception as e:
+        print(f"Error loading icon: {e}")
+
+    #icon = tk.PhotoImage(file=ICON_FILEPATHNAME)
+    #root.iconphoto(False, icon)
     load_labels_from_file()  # Load labels from JSON file on startup
     load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
     return root
