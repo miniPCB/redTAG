@@ -1,14 +1,12 @@
-# main.py
-
 import tkinter as tk
 from setup import setup_tabs
-from common import initialize_variables
+from common import root
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("redTAG")
-    
-    initialize_variables()  # Initialize Tkinter variables after root is created
+# Set the icon using the full path to the icon file
+root.iconphoto(False, tk.PhotoImage(file='/home/pi/redTAG/v3/icon.png'))
 
-    setup_tabs(root)
-    root.mainloop()
+# Set up the tabs and the rest of the GUI
+setup_tabs(root)
+
+# Start the main event loop
+root.mainloop()
