@@ -1,8 +1,6 @@
-from setup import setup_tabs
-from common import root
+from setup import setup_tabs, initialize_application
 
-# Run the application setup
-setup_tabs(root)
-
-# Start the main event loop
-root.mainloop()
+if __name__ == "__main__":
+    root = initialize_application()
+    setup_tabs(root)
+    root.mainloop()
