@@ -7,7 +7,7 @@ if __name__ == "__main__":
     root = tk.Tk()
 
     setup_tabs(root)
-    initialize_application(root)
+    initialize_application()
 
     load_labels_from_file()  # Load labels from JSON file on startup
     load_red_tag_messages_from_file()  # Load Red Tag messages from JSON file on startup
