@@ -21,6 +21,7 @@ red_tag_messages_list = []
 LABELS_FILE = "/home/pi/redTAG/redLabels.json"
 RED_TAG_FILE = "/home/pi/redTAG/redTagMessages.json"
 SAVE_DIRECTORY = "/home/pi/redTAG/redtags"
+ICON_FILEPATHNAME = '/home/pi/redTAG/v3/icon.png'
 
 # Function to initialize Tkinter variables after root is created
 def initialize_variables():

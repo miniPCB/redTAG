@@ -143,6 +143,9 @@ def setup_tabs(root):
     add_message_button = tk.Button(messages_subtab, text="Add Custom Message", command=apply_selected_label)
     add_message_button.pack(side=tk.LEFT, padx=10, pady=10)
 
+    # Set the icon for the application window
+    root.iconphoto(False, tk.PhotoImage(file=ICON_FILEPATHNAME))
+
     # Set the default window size to 1280x720 pixels
     root.geometry("1280x720")
 
