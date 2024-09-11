@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from labels import load_labels_from_file
 from red_tags import load_red_tag_messages_from_file
-from common import ICON_FILEPATHNAME
+from common import *
 from barcode import scan_barcode
-from utils import delete_file, pull_from_github
+from utils import pull_from_github
 
 def setup_tabs(root):
     global tab_control, board_info_tab, boards_subtab_control, messages_subtab, trending_tab
