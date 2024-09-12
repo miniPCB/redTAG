@@ -3,7 +3,8 @@ from tkinter import ttk, Frame, Label
 class setup_tabs:
     def __init__(self, master):
         self.master = master
-        self.master.title("Main Application")
+        self.master.title("Red Tag")  # Set window title
+        self.master.geometry("1280x720")  # Set window size
 
         # Create the main notebook (tab control)
         self.notebook = ttk.Notebook(self.master)
@@ -75,4 +76,3 @@ class setup_tabs:
 
         # Add the Quality Information tab to the notebook
         self.notebook.add(quality_info_frame, text="Quality Information")
-
