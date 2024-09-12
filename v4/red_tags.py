@@ -1,5 +1,5 @@
 import os
-import tkinter as tk
+#import tkinter as tk
 from common import red_tag_messages_list, red_tag_message_list_frame, RED_TAG_FILE
 import json
 from utils import *

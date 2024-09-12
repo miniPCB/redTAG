@@ -1,8 +1,9 @@
-from tkinter import Tk
+from tkinter import tk
+from tkinter import ttk
 from setup import setup_tabs
 
 def main():
-    root = Tk()
+    root = tk()
     app = setup_tabs(root)
     root.mainloop()
 
