@@ -24,20 +24,20 @@ class setup_tabs:
 
         # Create a frame to hold the buttons at the top of the Controls tab
         button_frame = Frame(controls_frame)
-        button_frame.pack(side="top", pady=10)  # Pack the button frame at the top
+        button_frame.pack(side="top", pady=(5, 5))  # Reduce padding to shrink button space
 
         # Add buttons side by side in the Controls tab
         scan_button = Button(button_frame, text="Scan a Barcode")
         delete_button = Button(button_frame, text="Delete a File")
         update_button = Button(button_frame, text="Update Local Files")
 
-        scan_button.pack(side="left", padx=10, pady=5)
-        delete_button.pack(side="left", padx=10, pady=5)
-        update_button.pack(side="left", padx=10, pady=5)
+        scan_button.pack(side="left", padx=5, pady=5)  # Reduce padding to make buttons closer
+        delete_button.pack(side="left", padx=5, pady=5)
+        update_button.pack(side="left", padx=5, pady=5)
 
         # Create sub-tabs under the buttons
         sub_notebook = ttk.Notebook(controls_frame)
-        sub_notebook.pack(expand=True, fill='both', pady=(10, 0))
+        sub_notebook.pack(expand=True, fill='both', pady=(5, 0))  # Reduce padding to bring sub-tabs closer to buttons
 
         # Process Messages tab
         process_messages_frame = Frame(sub_notebook)
