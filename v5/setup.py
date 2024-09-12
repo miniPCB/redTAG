@@ -1,4 +1,4 @@
-from tkinter import ttk, Frame, Label, Button
+from tkinter import ttk, Frame, Label, Button, Entry, StringVar, Radiobutton, IntVar
 
 class setup_tabs:
     def __init__(self, master):
@@ -18,39 +18,75 @@ class setup_tabs:
         self.add_quality_information_tab()
 
     def add_controls_tab(self):
-        # Create a new frame for the Controls tab
         controls_frame = Frame(self.notebook)
         controls_frame.pack(fill='both', expand=True)
 
-        # Create a frame to hold the buttons at the top of the Controls tab
         button_frame = Frame(controls_frame)
-        button_frame.pack(side="top", pady=(5, 5))  # Reduce padding to shrink button space
+        button_frame.pack(side="top", pady=(5, 5))
 
-        # Add buttons side by side in the Controls tab
         scan_button = Button(button_frame, text="Scan a Barcode")
         delete_button = Button(button_frame, text="Delete a File")
         update_button = Button(button_frame, text="Update Local Files")
 
-        scan_button.pack(side="left", padx=5, pady=5)  # Reduce padding to make buttons closer
+        scan_button.pack(side="left", padx=5, pady=5)
         delete_button.pack(side="left", padx=5, pady=5)
         update_button.pack(side="left", padx=5, pady=5)
 
-        # Create sub-tabs under the buttons
         sub_notebook = ttk.Notebook(controls_frame)
-        sub_notebook.pack(expand=True, fill='both', pady=(5, 0))  # Reduce padding to bring sub-tabs closer to buttons
+        sub_notebook.pack(expand=True, fill='both', pady=(5, 0))
 
-        # Process Messages tab
         process_messages_frame = Frame(sub_notebook)
         process_messages_frame.pack(fill='both', expand=True)
+        self.add_process_messages_tab(process_messages_frame)
         sub_notebook.add(process_messages_frame, text="Process Messages")
 
-        # Red Tag Messages tab
         red_tag_messages_frame = Frame(sub_notebook)
         red_tag_messages_frame.pack(fill='both', expand=True)
         sub_notebook.add(red_tag_messages_frame, text="Red Tag Messages")
 
-        # Add the Controls tab to the notebook
         self.notebook.add(controls_frame, text="Controls")
+
+    def add_process_messages_tab(self, parent):
+        # Entry for new process message
+        self.new_message_var = StringVar()
+        entry_frame = Frame(parent)
+        entry_frame.pack(side="top", fill="x", pady=(10, 5), padx=10)
+
+        entry_label = Label(entry_frame, text="Enter Process Message:")
+        entry_label.pack(side="left")
+
+        entry_field = Entry(entry_frame, textvariable=self.new_message_var)
+        entry_field.pack(side="left", fill="x", expand=True, padx=(5, 10))
+
+        add_button = Button(entry_frame, text="Add Process Message", command=self.add_process_message)
+        add_button.pack(side="left")
+
+        # Frame to hold the list of radio buttons
+        self.messages_frame = Frame(parent)
+        self.messages_frame.pack(fill="both", expand=True, pady=(10, 0), padx=10)
+
+        # Variable to keep track of the selected message
+        self.selected_message = IntVar(value=-1)
+
+    def add_process_message(self):
+        # Get the new message text
+        new_message = self.new_message_var.get().strip()
+
+        if new_message:
+            # Get the current count of messages to use as the radio button value
+            message_count = len(self.messages_frame.winfo_children())
+
+            # Create a new radio button with the message
+            radio_button = Radiobutton(
+                self.messages_frame,
+                text=new_message,
+                variable=self.selected_message,
+                value=message_count
+            )
+            radio_button.pack(anchor="w")
+
+            # Clear the entry field after adding the message
+            self.new_message_var.set("")
 
     def add_trending_tab(self):
         trending_frame = Frame(self.notebook)
