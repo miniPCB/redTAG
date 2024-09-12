@@ -22,14 +22,18 @@ class setup_tabs:
         controls_frame = Frame(self.notebook)
         controls_frame.pack(fill='both', expand=True)
 
-        # Add buttons near the top of the Controls tab
-        scan_button = Button(controls_frame, text="Scan a Barcode")
-        delete_button = Button(controls_frame, text="Delete a File")
-        update_button = Button(controls_frame, text="Update Local Files")
+        # Create a frame to hold the buttons at the top of the Controls tab
+        button_frame = Frame(controls_frame)
+        button_frame.pack(side="top", pady=10)  # Pack the button frame at the top
 
-        scan_button.pack(side="left", padx=10, pady=10)
-        delete_button.pack(side="left", padx=10, pady=10)
-        update_button.pack(side="left", padx=10, pady=10)
+        # Add buttons one on top of the other in the Controls tab
+        scan_button = Button(button_frame, text="Scan a Barcode")
+        delete_button = Button(button_frame, text="Delete a File")
+        update_button = Button(button_frame, text="Update Local Files")
+
+        scan_button.pack(fill="x", padx=10, pady=5)  # Fill the width of the button frame
+        delete_button.pack(fill="x", padx=10, pady=5)
+        update_button.pack(fill="x", padx=10, pady=5)
 
         # Create sub-tabs under the buttons
         sub_notebook = ttk.Notebook(controls_frame)
