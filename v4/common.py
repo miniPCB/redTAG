@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from setup import *
+from utils import *
 
 # Initialize the main root window
 root = tk.Tk()
